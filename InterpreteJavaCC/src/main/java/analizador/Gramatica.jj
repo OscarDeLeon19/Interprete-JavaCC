@@ -1,0 +1,212 @@
+options {
+  IGNORE_CASE = false;
+  STATIC = false;
+}
+
+PARSER_BEGIN(Gramatica)
+/** Analizador de expresiones aritmeticas sencillas. */
+package Analizador; 
+
+import expresiones.Logica;
+import expresiones.Operacion;
+import expresiones.Relacional;
+import salida.Salida;
+import tabla.Tipo;
+import instrucciones.Instruccion;
+import instrucciones.Declaracion;
+import expresiones.Valor;
+
+public class Gramatica {
+    
+    Salida salida = new Salida();
+
+    public void setSalida(Salida salida){
+        this.salida = salida;
+    }
+
+}
+PARSER_END(Gramatica)
+
+MORE :
+{
+    "\"" :STRING_STATE
+}
+
+TOKEN : {
+      <ENTERO: (["0"-"9"])+>
+    | <DECIMAL: (["0"-"9"])+"."(["0"-"9"])+>
+    | <TRUE: "true">    
+    | <FALSE: "false">
+    | <CADENA: "Cadena">
+    | <INT: "Int">
+    | <DOUBLE: "Double">
+    | <BOOLEAN: "Boolean">
+    | <IMPRIMIR: "Imprimir">
+    | <MIENTRAS: "Mientras">
+    | <FUNCION: "Funcion">
+    | <RETORNO: "Return">
+    | <BREAK: "Break">
+    | <CONTINUE: "continue">
+    | <SI: "if">
+    | <SINO: "else">
+    | <PCOMA: ";">
+    | <PARIZ: "(">
+    | <PARDE: ")">
+    | <CORI: "[">
+    | <CORD: "]">
+    | <LLAVE_I: "{">
+    | <LLAVE_D: "}">
+    | <MAS: "+">
+    | <MENOS: "-">
+    | <POR: "*">
+    | <DIV: "/">
+    | <IGUAL: "=">
+    | <MENORQUE: "<">
+    | <MAYORQUE: ">">
+    | <MENORIGUAL: "<=">
+    | <MAYORIGUAL: ">=">
+    | <IGUALACION: "==">
+    | <DIFERENCIACION: "!=">
+    | <COMA: ",">
+    | <AND: "&&">
+    | <OR: "||">
+    | <NOT: "!" >
+    | <IDENTIFICADOR: ["a"-"z","A"-"Z", "_"] ( ["a"-"z","A"-"Z", "_"] | ["0"-"9"] )* >
+    
+}
+
+SKIP : {
+      " "
+    | "\t"
+    | "\r"
+    | "\n"
+    | <"//" (~["\n", "\r"])*> {System.out.println("Comentario");}
+    | <"/*" (~["*"])* "*" ("*" | ~["*","/"] (~["*"])* "*")* "/">
+    | <(~[])> {System.out.println("error");}
+
+}
+
+<STRING_STATE> MORE:
+{
+    <~["\""]>
+}
+
+<STRING_STATE> TOKEN:
+{
+   <STRING:"\""> : DEFAULT 
+}
+
+void Analizar():
+{Instruccion ins; }
+{
+    (ins = Instruccion() {salida.agregarInstruccion(ins);})+ <EOF>
+}
+Instruccion Instruccion() :
+{Instruccion e;}
+{
+    e = Declaracion() {return e;}
+}
+
+Instruccion Declaracion():
+{Tipo t; Token tok; Instruccion e = null;}
+{
+    t = Tipo() tok = <IDENTIFICADOR> (<IGUAL> e = Expresion())? <PCOMA> {return new Declaracion(Tipo.DECLARACION,tok.image, e, t, tok.beginLine, tok.beginColumn);}
+}
+
+Tipo Tipo() :
+{}
+{
+    <INT> {return Tipo.ENTERO;}
+    | <DOUBLE> {return Tipo.DECIMAL;}
+    | <CADENA> {return Tipo.CADENA;}
+    | <BOOLEAN> {return Tipo.BOOLEAN;}
+}
+
+Instruccion Expresion() :
+{Instruccion e, e1;}
+{
+    e = And() 
+    ( 
+        <OR> e1 = And() {e = new Logica(Tipo.LOGICA, e, e1, Tipo.OR, token.beginLine, token.beginColumn);}
+    )*
+    {return e;}
+}
+
+Instruccion And() :
+{Instruccion e, e1;}
+{
+    e = ExpresionIgual() 
+    ( 
+        <AND> e1 = ExpresionIgual() {e = new Logica(Tipo.LOGICA, e, e1, Tipo.AND, token.beginLine, token.beginColumn);}
+    )*
+    {return e;}
+}
+
+Instruccion ExpresionIgual() :
+{Instruccion e, e1;}
+{
+    e = ExpresionRelacional() 
+    (
+        <IGUALACION> e1 = ExpresionRelacional() {e = new Relacional(Tipo.RELACIONAL, e, e1, Tipo.IGUAL, token.beginLine, token.beginColumn);}
+        | <DIFERENCIACION> e1 = ExpresionRelacional() {e = new Relacional(Tipo.RELACIONAL, e, e1, Tipo.DIFERENTE, token.beginLine, token.beginColumn);}
+    )*
+    {return e;}
+}
+
+Instruccion ExpresionRelacional() :
+{Instruccion e, e1;}
+{
+    e = ExpresionAditiva()
+    (
+        <MAYORQUE> e1 = ExpresionAditiva() {e = new Relacional(Tipo.RELACIONAL, e, e1, Tipo.MAYOR, token.beginLine, token.beginColumn);}
+        | <MENORQUE> e1 = ExpresionAditiva() {e = new Relacional(Tipo.RELACIONAL, e, e1, Tipo.MENOR, token.beginLine, token.beginColumn);}
+        | <MAYORIGUAL> e1 = ExpresionAditiva() {e = new Relacional(Tipo.RELACIONAL, e, e1, Tipo.MAYORIGUAL, token.beginLine, token.beginColumn);}
+        | <MENORIGUAL> e1 = ExpresionAditiva() {e = new Relacional(Tipo.RELACIONAL, e, e1, Tipo.MENORIGUAL, token.beginLine, token.beginColumn);}
+    )*
+    {return e;}
+}
+
+Instruccion ExpresionAditiva() :
+{Instruccion e, e1;}
+{
+    e =ExpresionMultiplicativa()
+    (
+        <MAS> e1 = ExpresionMultiplicativa() {e = new Operacion(Tipo.OPERACION, e, e1, Tipo.SUMA, token.beginLine, token.beginColumn);}
+        | <MENOS> e1 = ExpresionMultiplicativa() {e = new Operacion(Tipo.OPERACION, e, e1, Tipo.RESTA, token.beginLine, token.beginColumn);}
+    )* 
+    {return e;}
+}
+
+Instruccion ExpresionMultiplicativa() :
+{Instruccion e, e1;}
+{
+    e =ExpresionUnaria()
+    (
+        <POR> e1 = ExpresionUnaria() {e = new Operacion(Tipo.OPERACION, e, e1, Tipo.MULTIPLICACION, token.beginLine, token.beginColumn);}
+        | <DIV> e1 =ExpresionUnaria() {e = new Operacion(Tipo.OPERACION, e, e1, Tipo.DIVISION, token.beginLine, token.beginColumn);}
+    )*
+    {return e;}
+}
+
+Instruccion ExpresionUnaria() :
+{Instruccion e;}
+{
+    <MENOS> e = Primitivo() {return new Operacion(Tipo.OPERACION,  e, null, Tipo.MENOS, token.beginLine, token.beginColumn);}
+    | <NOT> e = Primitivo() {return new Logica(Tipo.LOGICA,  e, null, Tipo.NOT, token.beginLine, token.beginColumn);}
+    | e = Primitivo() {return e;}
+}
+
+Instruccion Primitivo() :
+{Token t; Instruccion e = null;}
+{
+    t = <ENTERO> {return new Valor(Tipo.VALOR, t.image, Tipo.ENTERO, t.beginLine, t.beginColumn);}
+    | t= <DECIMAL> {return new Valor(Tipo.VALOR, t.image, Tipo.DECIMAL, t.beginLine, t.beginColumn);}
+    | t = <STRING> {return new Valor(Tipo.VALOR, t.image, Tipo.CADENA, t.beginLine, t.beginColumn);}
+    | t=<TRUE> {return new Valor(Tipo.VALOR, true, Tipo.BOOLEAN, t.beginLine, t.beginColumn);}
+    | t=<FALSE> {return new Valor(Tipo.VALOR, false, Tipo.BOOLEAN, t.beginLine, t.beginColumn);}
+    | t=<IDENTIFICADOR> {return new Valor(Tipo.VALOR, t.image, Tipo.IDENTIFICADOR, t.beginLine, t.beginColumn);}
+    | <PARIZ>  e = Expresion() <PARDE> {return e;}
+}
+
+
+
