@@ -1,11 +1,13 @@
 package tabla;
 
+import instrucciones.Funcion;
 import java.util.ArrayList;
 
 public class TablaSimbolos {
 
     private TablaSimbolos padre = null;
     private ArrayList<Simbolo> simbolos = new ArrayList<>();
+    private ArrayList<Funcion> funciones = new ArrayList<>();
 
     public TablaSimbolos(TablaSimbolos padre) {
         this.padre = padre;
@@ -21,7 +23,6 @@ public class TablaSimbolos {
             return padre.obtenerSimbolo(id);
         }
         return null;
-
     }
 
     public boolean buscarSimbolo(String id) {
@@ -38,6 +39,19 @@ public class TablaSimbolos {
 
     public void agregarSimbolo(Simbolo nuevaVariable) {
         simbolos.add(nuevaVariable);
+    }
+    
+    public void agregarFuncion(Funcion funcion){
+        funciones.add(funcion);
+    }
+    
+    public Funcion obtenerFuncion(String id) {
+        for (Funcion funcion : funciones) {
+            if (funcion.getIdentificador().equals(id)) {
+                return funcion;
+            }
+        }
+        return null;
     }
 
     public void recorrerTabla() {

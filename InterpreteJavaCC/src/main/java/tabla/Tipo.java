@@ -29,5 +29,7 @@ public enum Tipo {
     ERROR,
     LEXICO,
     SINTACTICO,
-    SEMANTICO
+    SEMANTICO,
+    VOID,
+    FUNCION
 }
