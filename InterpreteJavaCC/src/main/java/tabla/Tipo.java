@@ -31,5 +31,6 @@ public enum Tipo {
     SINTACTICO,
     SEMANTICO,
     VOID,
-    FUNCION
+    FUNCION,
+    IMPRIMIR
 }

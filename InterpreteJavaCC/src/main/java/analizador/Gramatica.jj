@@ -14,7 +14,9 @@ import salida.Salida;
 import tabla.Tipo;
 import instrucciones.Instruccion;
 import instrucciones.Declaracion;
+import instrucciones.Imprimir;
 import expresiones.Valor;
+import instrucciones.Funcion;
 import java.util.ArrayList;
 
 public class Gramatica {
@@ -114,12 +116,13 @@ Instruccion InstruccionFuncion() :
 {Instruccion e;}
 {
     e = Declaracion() {return e;}
+    | e = Imprimir() {return e;}
 }
 
 Instruccion Funcion():
-{Token id; ArrayList<Instruccion> instrucciones; Tipo tipo;}
+{Token id; ArrayList<Instruccion> instrucciones; ArrayList<Declaracion> declaraciones; Tipo tipo;}
 {
-    <FUNCION> tipo = FuncionTipo() id = <IDENTIFICADOR> <PARIZ> <PARDE> instrucciones = Bloque() 
+    <FUNCION> tipo = FuncionTipo() id = <IDENTIFICADOR> <PARIZ> declaraciones = ListaParametros() <PARDE> instrucciones = Bloque() 
     {return new Funcion(Tipo.FUNCION, id.image, null, instrucciones, tipo, id.beginLine, id.beginColumn);}
 }
 
@@ -127,6 +130,24 @@ ArrayList<Instruccion> Bloque():
 {ArrayList<Instruccion> instrucciones = new ArrayList<Instruccion>(); Instruccion e;}
 {
   <LLAVE_I> (e=InstruccionFuncion() {instrucciones.add(e);})* <LLAVE_D> {return instrucciones;}
+}
+
+ArrayList<Declaracion> ListaParametros() :
+{ArrayList<Declaracion> lista = new ArrayList<Declaracion>(); Declaracion e; Tipo t; Token id;}
+{
+    (
+        t=Tipo() id=<IDENTIFICADOR> {lista.add(new Declaracion(Tipo.DECLARACION,id.image, null, t, id.beginLine, id.beginColumn));}
+        (
+            <COMA> t=Tipo() id=<IDENTIFICADOR> {lista.add(new Declaracion(Tipo.DECLARACION,id.image, null, t, id.beginLine, id.beginColumn));}
+        )*
+    )?
+    {return lista;}
+}
+
+Instruccion Imprimir() :
+{Instruccion e;}
+{
+    <IMPRIMIR> <PARIZ> e=Expresion() <PARDE> <PCOMA> {return new Imprimir(Tipo.IMPRIMIR, e,token.beginLine, token.beginColumn);}
 }
 
 Instruccion Declaracion():

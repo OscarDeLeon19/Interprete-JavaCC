@@ -8,7 +8,9 @@ import salida.Salida;
 import tabla.Tipo;
 import instrucciones.Instruccion;
 import instrucciones.Declaracion;
+import instrucciones.Imprimir;
 import expresiones.Valor;
+import instrucciones.Funcion;
 import java.util.ArrayList;
 
 /** Token Manager. */

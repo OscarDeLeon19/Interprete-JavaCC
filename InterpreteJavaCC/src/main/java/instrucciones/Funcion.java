@@ -1,8 +1,11 @@
 package instrucciones;
 
+import expresiones.Valor;
 import java.util.ArrayList;
 import tabla.TablaSimbolos;
 import tabla.Tipo;
+import errores.Error;
+import javax.swing.JTextArea;
 
 public class Funcion extends Instruccion {
 
@@ -12,6 +15,7 @@ public class Funcion extends Instruccion {
     private Tipo tipo;
     private int fila;
     private int columna;
+    private JTextArea consola;
 
     public Funcion(Tipo id, String identificador, ArrayList<Declaracion> parametros, ArrayList<Instruccion> instrucciones, Tipo tipo, int fila, int columna) {
         super(id);
@@ -73,15 +77,33 @@ public class Funcion extends Instruccion {
         this.columna = columna;
     }
 
+    public JTextArea getConsola() {
+        return consola;
+    }
+
+    public void setConsola(JTextArea consola) {
+        this.consola = consola;
+    }
+
+    
     @Override
     public Instruccion operar(TablaSimbolos tabla) {
-        System.out.println("NADA"); //To change body of generated methods, choose Tools | Templates.
-        System.out.println(identificador);
         for (Instruccion ins : instrucciones) {
-            ins.operar(tabla);
+            if (ins instanceof Imprimir) {
+                Instruccion val = ins.operar(tabla);
+                if (val instanceof Valor) {
+                    consola.append(String.valueOf(((Valor) val).getValor()) + "\n");
+                } else{
+                    return val;
+                }
+            } else {
+                Instruccion valor = ins.operar(tabla);
+                if(valor instanceof Error){
+                    return valor;
+                }
+            }
         }
-        
-        return null;
+        return new Instruccion();
     }
 
 }

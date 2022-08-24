@@ -52,7 +52,13 @@ public class Error extends Instruccion{
         this.tipo = tipo;
     }
     
-
+    public String getMensaje(){
+        String msj = "\n /*\n Error de tipo: " + tipo + ":\n"
+                + enunciado + ". \n"
+                + "Fila: " + fila + " \n"
+                + "Columna " + columna + " \n*/\n";
+        return msj;
+    }
     
     
     
