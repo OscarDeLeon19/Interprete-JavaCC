@@ -18,6 +18,7 @@ import instrucciones.Imprimir;
 import expresiones.Valor;
 import instrucciones.Funcion;
 import java.util.ArrayList;
+import instrucciones.Asignacion;
 
 public class Gramatica {
     
@@ -109,6 +110,7 @@ Instruccion Instruccion() :
 {Instruccion e;}
 {
     e = Declaracion() {return e;}
+    | e = Asignacion() {return e;}
     | e = Funcion() {return e;}
 }
 
@@ -117,6 +119,7 @@ Instruccion InstruccionFuncion() :
 {
     e = Declaracion() {return e;}
     | e = Imprimir() {return e;}
+    | e = Asignacion() {return e;}
 }
 
 Instruccion Funcion():
@@ -148,6 +151,12 @@ Instruccion Imprimir() :
 {Instruccion e;}
 {
     <IMPRIMIR> <PARIZ> e=Expresion() <PARDE> <PCOMA> {return new Imprimir(Tipo.IMPRIMIR, e,token.beginLine, token.beginColumn);}
+}
+
+Instruccion Asignacion():
+{Instruccion e; Token id;}
+{
+    id = <IDENTIFICADOR> <IGUAL> e = Expresion() <PCOMA> {return new Asignacion(Tipo.ASIGNACION, id.image, e, id.beginLine, id.beginColumn);}
 }
 
 Instruccion Declaracion():

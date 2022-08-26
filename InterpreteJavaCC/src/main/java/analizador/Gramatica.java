@@ -13,6 +13,7 @@ import instrucciones.Imprimir;
 import expresiones.Valor;
 import instrucciones.Funcion;
 import java.util.ArrayList;
+import instrucciones.Asignacion;
 
 public class Gramatica implements GramaticaConstants {
 
@@ -34,6 +35,7 @@ public class Gramatica implements GramaticaConstants {
       case DOUBLE:
       case BOOLEAN:
       case FUNCION:
+      case IDENTIFICADOR:
         ;
         break;
       default:
@@ -53,6 +55,10 @@ public class Gramatica implements GramaticaConstants {
     case BOOLEAN:
       e = Declaracion();
                        {if (true) return e;}
+      break;
+    case IDENTIFICADOR:
+      e = Asignacion();
+                        {if (true) return e;}
       break;
     case FUNCION:
       e = Funcion();
@@ -79,6 +85,10 @@ public class Gramatica implements GramaticaConstants {
     case IMPRIMIR:
       e = Imprimir();
                       {if (true) return e;}
+      break;
+    case IDENTIFICADOR:
+      e = Asignacion();
+                        {if (true) return e;}
       break;
     default:
       jj_la1[2] = jj_gen;
@@ -112,6 +122,7 @@ public class Gramatica implements GramaticaConstants {
       case DOUBLE:
       case BOOLEAN:
       case IMPRIMIR:
+      case IDENTIFICADOR:
         ;
         break;
       default:
@@ -168,6 +179,16 @@ public class Gramatica implements GramaticaConstants {
     jj_consume_token(PARDE);
     jj_consume_token(PCOMA);
                                                       {if (true) return new Imprimir(Tipo.IMPRIMIR, e,token.beginLine, token.beginColumn);}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Instruccion Asignacion() throws ParseException {
+ Instruccion e; Token id;
+    id = jj_consume_token(IDENTIFICADOR);
+    jj_consume_token(IGUAL);
+    e = Expresion();
+    jj_consume_token(PCOMA);
+                                                          {if (true) return new Asignacion(Tipo.ASIGNACION, id.image, e, id.beginLine, id.beginColumn);}
     throw new Error("Missing return statement in function");
   }
 
@@ -531,7 +552,7 @@ public class Gramatica implements GramaticaConstants {
       jj_la1_0 = new int[] {0x26c0,0x26c0,0xec0,0xec0,0x0,0x6c0,0x40000000,0x7c0,0x6c0,0x0,0x0,0x0,0x0,0x80000000,0x80000000,0xc000000,0xc000000,0x30000000,0x30000000,0x810003c,0x10003c,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x20,0x0,0x0,0x0,0x0,0x80,0x40,0x18,0x18,0x7,0x7,0x0,0x0,0x0,0x0,0x40300,0x40200,};
+      jj_la1_1 = new int[] {0x200,0x200,0x200,0x200,0x20,0x0,0x0,0x0,0x0,0x80,0x40,0x18,0x18,0x7,0x7,0x0,0x0,0x0,0x0,0x40300,0x40200,};
    }
 
   /** Constructor with InputStream. */

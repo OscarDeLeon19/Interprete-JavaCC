@@ -94,7 +94,6 @@ public class Operacion extends Instruccion {
 
             Valor val1 = (Valor) nodoIzq;
             Valor val2 = (Valor) nodoDer;
-
             if (tipo == Tipo.SUMA) {
                 if (val1.getTipo() == Tipo.DECIMAL && val2.getTipo() == Tipo.DECIMAL) {
                     double izq = (double) val1.getValor();
