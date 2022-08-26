@@ -19,6 +19,7 @@ import expresiones.Valor;
 import instrucciones.Funcion;
 import java.util.ArrayList;
 import instrucciones.Asignacion;
+import instrucciones.Retorno;
 
 public class Gramatica {
     
@@ -120,6 +121,7 @@ Instruccion InstruccionFuncion() :
     e = Declaracion() {return e;}
     | e = Imprimir() {return e;}
     | e = Asignacion() {return e;}
+    | e = Retorno() {return e;}
 }
 
 Instruccion Funcion():
@@ -163,6 +165,12 @@ Instruccion Declaracion():
 {Tipo t; Token tok; Instruccion e = null;}
 {
     t = Tipo() tok = <IDENTIFICADOR> (<IGUAL> e = Expresion())? <PCOMA> {return new Declaracion(Tipo.DECLARACION,tok.image, e, t, tok.beginLine, tok.beginColumn);}
+}
+
+Instruccion Retorno():
+{Instruccion e = null;}
+{
+    <RETORNO> ( e = Expresion() )? <PCOMA> {return new Retorno(Tipo.RETORNO, e, token.beginLine, token.beginColumn);}
 }
 
 Tipo FuncionTipo() :

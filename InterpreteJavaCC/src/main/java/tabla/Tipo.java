@@ -33,5 +33,6 @@ public enum Tipo {
     VOID,
     FUNCION,
     IMPRIMIR,
-    ASIGNACION
+    ASIGNACION,
+    RETORNO
 }

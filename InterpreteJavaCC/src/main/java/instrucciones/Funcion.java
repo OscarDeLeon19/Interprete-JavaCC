@@ -16,6 +16,7 @@ public class Funcion extends Instruccion {
     private int fila;
     private int columna;
     private JTextArea consola;
+    private Valor valorRetorno;
 
     public Funcion(Tipo id, String identificador, ArrayList<Declaracion> parametros, ArrayList<Instruccion> instrucciones, Tipo tipo, int fila, int columna) {
         super(id);
@@ -25,6 +26,14 @@ public class Funcion extends Instruccion {
         this.tipo = tipo;
         this.fila = fila;
         this.columna = columna;
+    }
+
+    public Valor getValorRetorno() {
+        return valorRetorno;
+    }
+
+    public void setValorRetorno(Valor valorRetorno) {
+        this.valorRetorno = valorRetorno;
     }
 
     public String getIdentificador() {
@@ -85,7 +94,6 @@ public class Funcion extends Instruccion {
         this.consola = consola;
     }
 
-    
     @Override
     public Instruccion operar(TablaSimbolos tabla) {
         for (Instruccion ins : instrucciones) {
@@ -93,12 +101,27 @@ public class Funcion extends Instruccion {
                 Instruccion val = ins.operar(tabla);
                 if (val instanceof Valor) {
                     consola.append(String.valueOf(((Valor) val).getValor()) + "\n");
-                } else{
+                } else {
                     return val;
+                }
+            } else if (ins instanceof Retorno) {
+                if (tipo != Tipo.VOID) {
+                    Instruccion retorno = ins.operar(tabla);
+                    if (retorno != null) {
+                        if (retorno instanceof Error) {
+                            return retorno;
+                        }
+                        valorRetorno = (Valor) retorno;
+                        break;
+                    } else {
+                        return new Error(Tipo.ERROR, "El retorno debe tener un valor que retornar", tipo.SEMANTICO, fila, columna);
+                    }
+                } else {
+                    break;
                 }
             } else {
                 Instruccion valor = ins.operar(tabla);
-                if(valor instanceof Error){
+                if (valor instanceof Error) {
                     return valor;
                 }
             }
