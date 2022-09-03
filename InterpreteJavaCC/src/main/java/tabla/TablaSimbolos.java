@@ -13,6 +13,33 @@ public class TablaSimbolos {
         this.padre = padre;
     }
 
+    public TablaSimbolos getPadre() {
+        return padre;
+    }
+
+    public void setPadre(TablaSimbolos padre) {
+        this.padre = padre;
+    }
+
+    public ArrayList<Simbolo> getSimbolos() {
+        return simbolos;
+    }
+
+    public void setSimbolos(ArrayList<Simbolo> simbolos) {
+        this.simbolos = simbolos;
+    }
+
+    public ArrayList<Funcion> getFunciones() {
+        return funciones;
+    }
+
+    public void setFunciones(ArrayList<Funcion> funciones) {
+        this.funciones = funciones;
+    }
+
+    
+    
+    
     public Simbolo obtenerSimbolo(String id) {
         for (Simbolo simbolo : simbolos) {
             if (simbolo.getId().equals(id)) {
@@ -37,24 +64,51 @@ public class TablaSimbolos {
         return false;
     }
 
+    public boolean buscarSimboloLocal(String id) {
+        for (Simbolo simbolo : simbolos) {
+            if (simbolo.getId().equals(id)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void agregarSimbolo(Simbolo nuevaVariable) {
         simbolos.add(nuevaVariable);
     }
-    
-    public void agregarFuncion(Funcion funcion){
+
+    public void agregarFuncion(Funcion funcion) {
         funciones.add(funcion);
     }
-    
+
     public Funcion obtenerFuncion(String id) {
         for (Funcion funcion : funciones) {
             if (funcion.getIdentificador().equals(id)) {
                 return funcion;
             }
         }
+        if (padre != null) {
+            return padre.obtenerFuncion(id);
+        }
         return null;
     }
 
+    public Boolean buscarFuncion(String id) {
+        
+        for (Funcion funcion : funciones) {
+            if (funcion.getIdentificador().equals(id)) {
+                return true;
+            }
+        }
+        
+        if (padre != null) {
+            return padre.buscarFuncion(id);
+        }
+        return false;
+    }
+
     public void recorrerTabla() {
+        
         System.out.println("Tabla de simbolos");
         for (Simbolo simbolo : simbolos) {
             if (simbolo.getTipo() == Tipo.ENTERO) {

@@ -45,6 +45,7 @@ public class Imprimir extends Instruccion{
 
     @Override
     public Instruccion operar(TablaSimbolos tabla) {
+        expresion.setConsola(super.getConsola());
         Instruccion val = expresion.operar(tabla);
         return val;
         

@@ -15,7 +15,6 @@ public class Funcion extends Instruccion {
     private Tipo tipo;
     private int fila;
     private int columna;
-    private JTextArea consola;
     private Valor valorRetorno;
 
     public Funcion(Tipo id, String identificador, ArrayList<Declaracion> parametros, ArrayList<Instruccion> instrucciones, Tipo tipo, int fila, int columna) {
@@ -86,25 +85,18 @@ public class Funcion extends Instruccion {
         this.columna = columna;
     }
 
-    public JTextArea getConsola() {
-        return consola;
-    }
-
-    public void setConsola(JTextArea consola) {
-        this.consola = consola;
-    }
-
     @Override
     public Instruccion operar(TablaSimbolos tabla) {
         for (Instruccion ins : instrucciones) {
+            ins.setConsola(super.getConsola());
             if (ins instanceof Imprimir) {
                 Instruccion val = ins.operar(tabla);
                 if (val instanceof Valor) {
-                    consola.append(String.valueOf(((Valor) val).getValor()) + "\n");
+                    super.getConsola().append(String.valueOf(((Valor) val).getValor()) + "\n");
                 } else {
                     return val;
                 }
-            } else if (ins instanceof Retorno) {
+            }else if (ins instanceof Retorno) {
                 if (tipo != Tipo.VOID) {
                     Instruccion retorno = ins.operar(tabla);
                     if (retorno != null) {

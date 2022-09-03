@@ -5,6 +5,7 @@
  */
 package instrucciones;
 
+import javax.swing.JTextArea;
 import tabla.TablaSimbolos;
 import tabla.Tipo;
 
@@ -15,6 +16,7 @@ import tabla.Tipo;
 public class Instruccion {
     
     private Tipo id;
+    private JTextArea consola;
 
     public Tipo getId() {
         return id;
@@ -24,6 +26,14 @@ public class Instruccion {
         this.id = id;
     }
 
+    public JTextArea getConsola() {
+        return consola;
+    }
+
+    public void setConsola(JTextArea consola) {
+        this.consola = consola;
+    }
+  
     public Instruccion(Tipo id) {
         this.id = id;
     }

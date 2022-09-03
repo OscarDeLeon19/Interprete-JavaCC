@@ -5,6 +5,7 @@ import tabla.Simbolo;
 import tabla.TablaSimbolos;
 import tabla.Tipo;
 import errores.Error;
+import instrucciones.Llamada;
 
 public class Valor extends Instruccion {
 
@@ -64,7 +65,9 @@ public class Valor extends Instruccion {
             return this;
         } else if (tipo == Tipo.CADENA) {
             String val = String.valueOf(valor);
-            val = val.substring(1, val.length() - 1);
+            if (val.startsWith("\"")) {
+                val = val.substring(1, val.length() - 1);
+            }
             return new Valor(Tipo.VALOR, val, Tipo.CADENA, this.fila, this.columna);
         } else if (tipo == Tipo.IDENTIFICADOR) {
             Simbolo simbolo = tabla.obtenerSimbolo(String.valueOf(valor));
@@ -72,6 +75,23 @@ public class Valor extends Instruccion {
                 return new Valor(Tipo.VALOR, simbolo.getValor(), simbolo.getTipo(), this.fila, this.columna);
             } else {
                 return new Error(Tipo.ERROR, "No se encontro el simbolo solicitado", Tipo.SEMANTICO, fila, columna);
+            }
+        } else if (tipo == Tipo.LLAMADA) {
+            Llamada llamada = (Llamada) valor;
+            boolean comprobacion = tabla.buscarFuncion(llamada.getIdentificador());
+            if (comprobacion == true) {
+                llamada.setConsola(super.getConsola());
+                Instruccion valorLlamada = llamada.operar(tabla);
+                if (valorLlamada instanceof Error) {
+                    return valorLlamada;
+                }
+                if (valorLlamada instanceof Valor) {
+                    return valorLlamada;
+                } else {
+                    return new Error(Tipo.ERROR, "La llamada es de tipo Void", Tipo.SEMANTICO, fila, columna);
+                }
+            } else {
+                return new Error(Tipo.ERROR, "No se pudo encontrasssssssr la funcion " + llamada.getIdentificador(), Tipo.SEMANTICO, fila, columna);
             }
         } else {
             return new Error(Tipo.ERROR, "El tipo del valor no se puede operar", Tipo.SEMANTICO, fila, columna);

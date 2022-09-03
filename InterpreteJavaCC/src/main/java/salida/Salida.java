@@ -39,6 +39,7 @@ public class Salida {
         TablaSimbolos tabla = new TablaSimbolos(null);
         for (Instruccion instruccion : instrucciones) {
             if (instruccion instanceof Funcion) {
+                
                 tabla.agregarFuncion((Funcion) instruccion);
             } else {
                 Instruccion operada = instruccion.operar(tabla);
@@ -52,6 +53,7 @@ public class Salida {
     }
     
     public void ejecutarPrincipal(TablaSimbolos tabla){
+        System.out.println(tabla.getFunciones().size());
         Funcion funcion = tabla.obtenerFuncion("Principal");
         if(funcion == null){
             //ERROR

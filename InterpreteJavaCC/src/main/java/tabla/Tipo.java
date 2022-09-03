@@ -34,5 +34,6 @@ public enum Tipo {
     FUNCION,
     IMPRIMIR,
     ASIGNACION,
-    RETORNO
+    RETORNO,
+    LLAMADA
 }

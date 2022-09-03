@@ -20,6 +20,7 @@ import instrucciones.Funcion;
 import java.util.ArrayList;
 import instrucciones.Asignacion;
 import instrucciones.Retorno;
+import instrucciones.Llamada;
 
 public class Gramatica {
     
@@ -128,7 +129,7 @@ Instruccion Funcion():
 {Token id; ArrayList<Instruccion> instrucciones; ArrayList<Declaracion> declaraciones; Tipo tipo;}
 {
     <FUNCION> tipo = FuncionTipo() id = <IDENTIFICADOR> <PARIZ> declaraciones = ListaParametros() <PARDE> instrucciones = Bloque() 
-    {return new Funcion(Tipo.FUNCION, id.image, null, instrucciones, tipo, id.beginLine, id.beginColumn);}
+    {return new Funcion(Tipo.FUNCION, id.image, declaraciones, instrucciones, tipo, id.beginLine, id.beginColumn);}
 }
 
 ArrayList<Instruccion> Bloque():
@@ -156,9 +157,16 @@ Instruccion Imprimir() :
 }
 
 Instruccion Asignacion():
-{Instruccion e; Token id;}
+{Instruccion e; Token id; ArrayList<Instruccion> lista = new ArrayList<Instruccion>();}
 {
-    id = <IDENTIFICADOR> <IGUAL> e = Expresion() <PCOMA> {return new Asignacion(Tipo.ASIGNACION, id.image, e, id.beginLine, id.beginColumn);}
+    id = <IDENTIFICADOR> 
+        (
+            <PARIZ> lista = Lista_Expresiones() <PARDE> <PCOMA>
+            {
+                return new Llamada(Tipo.LLAMADA, id.image, lista, id.beginLine, id.beginColumn); 
+            }
+        )?
+    <IGUAL> e = Expresion() <PCOMA> {return new Asignacion(Tipo.ASIGNACION, id.image, e, id.beginLine, id.beginColumn);}
 }
 
 Instruccion Declaracion():
@@ -191,6 +199,18 @@ Tipo Tipo() :
     | <DOUBLE> {return Tipo.DECIMAL;}
     | <CADENA> {return Tipo.CADENA;}
     | <BOOLEAN> {return Tipo.BOOLEAN;}
+}
+
+ArrayList<Instruccion> Lista_Expresiones() :
+{ArrayList<Instruccion> lista = new ArrayList<Instruccion>(); Instruccion e;}
+{
+    (
+        e=Expresion() {lista.add(e);}
+        (
+            <COMA> e=Expresion() {lista.add(e);}
+        )*
+    )?
+    {return lista;}
 }
 
 Instruccion Expresion() :
@@ -268,14 +288,22 @@ Instruccion ExpresionUnaria() :
 }
 
 Instruccion Primitivo() :
-{Token t; Instruccion e = null;}
+{Token t; Instruccion e = null; ArrayList<Instruccion> lista = new ArrayList<Instruccion>(); }
 {
     t = <ENTERO> {return new Valor(Tipo.VALOR, t.image, Tipo.ENTERO, t.beginLine, t.beginColumn);}
     | t= <DECIMAL> {return new Valor(Tipo.VALOR, t.image, Tipo.DECIMAL, t.beginLine, t.beginColumn);}
     | t = <STRING> {return new Valor(Tipo.VALOR, t.image, Tipo.CADENA, t.beginLine, t.beginColumn);}
     | t=<TRUE> {return new Valor(Tipo.VALOR, true, Tipo.BOOLEAN, t.beginLine, t.beginColumn);}
     | t=<FALSE> {return new Valor(Tipo.VALOR, false, Tipo.BOOLEAN, t.beginLine, t.beginColumn);}
-    | t=<IDENTIFICADOR> {return new Valor(Tipo.VALOR, t.image, Tipo.IDENTIFICADOR, t.beginLine, t.beginColumn);}
+    | t=<IDENTIFICADOR> 
+        (
+            <PARIZ> lista = Lista_Expresiones() <PARDE> 
+            {
+                Llamada llamada = new Llamada(Tipo.LLAMADA, t.image, lista, t.beginLine, t.beginColumn); 
+                return new Valor(Tipo.VALOR, llamada, Tipo.LLAMADA, t.beginLine, t.beginColumn);
+            }
+        )?
+        {return new Valor(Tipo.VALOR, t.image, Tipo.IDENTIFICADOR, t.beginLine, t.beginColumn);}
     | <PARIZ>  e = Expresion() <PARDE> {return e;}
 }
 
