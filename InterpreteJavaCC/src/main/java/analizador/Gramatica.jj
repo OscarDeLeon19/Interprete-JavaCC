@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import instrucciones.Asignacion;
 import instrucciones.Retorno;
 import instrucciones.Llamada;
+import instrucciones.Si;
 
 public class Gramatica {
     
@@ -54,8 +55,8 @@ TOKEN : {
     | <RETORNO: "Return">
     | <BREAK: "Break">
     | <CONTINUE: "continue">
-    | <SI: "if">
-    | <SINO: "else">
+    | <SI: "Si">
+    | <SINO: "Sino">
     | <PCOMA: ";">
     | <PARIZ: "(">
     | <PARDE: ")">
@@ -123,7 +124,36 @@ Instruccion InstruccionFuncion() :
     | e = Imprimir() {return e;}
     | e = Asignacion() {return e;}
     | e = Retorno() {return e;}
+    | e = Si() {return e;}
 }
+
+Instruccion Si():
+{
+    Instruccion e; ArrayList<Instruccion> cuerpoSi = new ArrayList<Instruccion>();
+    ArrayList<Instruccion> cuerpoElse = new ArrayList<Instruccion>();
+}
+{
+    <SI> <PARIZ> e = Expresion() <PARDE> cuerpoSi = BloqueSi()
+        ( <SINO> cuerpoElse = BloqueSi())?
+        {return new Si(Tipo.SI, e, cuerpoSi, cuerpoElse, token.beginLine, token.beginColumn);}
+}
+
+ArrayList<Instruccion> BloqueSi():
+{ArrayList<Instruccion> instrucciones = new ArrayList<Instruccion>(); Instruccion e;}
+{
+  <LLAVE_I> (e=InstruccionSi() {instrucciones.add(e);})* <LLAVE_D> {return instrucciones;}
+}
+
+Instruccion InstruccionSi() :
+{Instruccion e;}
+{
+    e = Declaracion() {return e;}
+    | e = Imprimir() {return e;}
+    | e = Asignacion() {return e;}
+    | e = Retorno() {return e;}
+    | e = Si() {return e;}
+}
+
 
 Instruccion Funcion():
 {Token id; ArrayList<Instruccion> instrucciones; ArrayList<Declaracion> declaraciones; Tipo tipo;}

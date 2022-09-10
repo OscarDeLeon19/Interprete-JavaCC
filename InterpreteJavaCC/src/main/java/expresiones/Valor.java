@@ -72,7 +72,7 @@ public class Valor extends Instruccion {
         } else if (tipo == Tipo.IDENTIFICADOR) {
             Simbolo simbolo = tabla.obtenerSimbolo(String.valueOf(valor));
             if (simbolo != null) {
-                return new Valor(Tipo.VALOR, simbolo.getValor(), simbolo.getTipo(), this.fila, this.columna);
+                return new Valor(Tipo.VALOR,  simbolo.getValor(), simbolo.getTipo(), this.fila, this.columna);
             } else {
                 return new Error(Tipo.ERROR, "No se encontro el simbolo solicitado", Tipo.SEMANTICO, fila, columna);
             }
@@ -86,6 +86,7 @@ public class Valor extends Instruccion {
                     return valorLlamada;
                 }
                 if (valorLlamada instanceof Valor) {
+                    valorLlamada.setConsola(super.getConsola());
                     return valorLlamada;
                 } else {
                     return new Error(Tipo.ERROR, "La llamada es de tipo Void", Tipo.SEMANTICO, fila, columna);

@@ -48,8 +48,7 @@ public class Imprimir extends Instruccion{
         expresion.setConsola(super.getConsola());
         Instruccion val = expresion.operar(tabla);
         return val;
-        
-        
+    
     }
     
     

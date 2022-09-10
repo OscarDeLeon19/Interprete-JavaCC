@@ -65,6 +65,7 @@ public class Operacion extends Instruccion {
     @Override
     public Instruccion operar(TablaSimbolos tabla) {
         if (tipo == Tipo.MENOS) {
+            valIzq.setConsola(super.getConsola());
             Instruccion nodoIzq = valIzq.operar(tabla);
             if (nodoIzq instanceof Error) {
                 return nodoIzq;
@@ -81,9 +82,14 @@ public class Operacion extends Instruccion {
                 return new Error(Tipo.ERROR, "Error al realizar la operacion", Tipo.SEMANTICO, fila, columna);
             }
         } else {
+            valIzq.setConsola(super.getConsola());
+            valDer.setConsola(super.getConsola());
             Instruccion nodoIzq = valIzq.operar(tabla);
             Instruccion nodoDer = valDer.operar(tabla);
 
+            if(super.getConsola()== null){
+                System.out.println("TODODOOOOO");
+            }
             if (nodoIzq instanceof Error) {
                 return nodoIzq;
             }

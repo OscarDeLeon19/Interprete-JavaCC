@@ -56,7 +56,7 @@ public class Asignacion extends Instruccion {
     @Override
     public Instruccion operar(TablaSimbolos tabla) {
         Simbolo simbolo = tabla.obtenerSimbolo(identificador);
-
+        expresion.setConsola(super.getConsola());
         Instruccion ins = expresion.operar(tabla);
         if (ins instanceof Error) {
             return ins;

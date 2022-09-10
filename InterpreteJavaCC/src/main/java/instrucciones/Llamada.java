@@ -6,6 +6,7 @@ import tabla.Tipo;
 import errores.Error;
 import expresiones.Valor;
 import javax.swing.JTextArea;
+import tabla.Simbolo;
 
 public class Llamada extends Instruccion {
 
@@ -13,15 +14,14 @@ public class Llamada extends Instruccion {
     private ArrayList<Instruccion> expresiones;
     private int fila;
     private int columna;
- 
+
     public Llamada(Tipo id, String identificador, ArrayList<Instruccion> expresiones, int fila, int columna) {
         super(id);
         this.identificador = identificador;
         this.expresiones = expresiones;
         this.fila = fila;
         this.columna = columna;
-        
-        
+
     }
 
     public String getIdentificador() {
@@ -55,7 +55,7 @@ public class Llamada extends Instruccion {
     public void setColumna(int columna) {
         this.columna = columna;
     }
-    
+
     @Override
     public Instruccion operar(TablaSimbolos tabla) {
         Funcion funcion = tabla.obtenerFuncion(identificador);
@@ -67,21 +67,30 @@ public class Llamada extends Instruccion {
             for (int i = 0; i < funcion.getParametros().size(); i++) {
                 Declaracion decla = funcion.getParametros().get(i);
                 if (nuevaTabla.buscarSimboloLocal(decla.getIdentificador()) == false) {
+                    expresiones.get(i).setConsola(super.getConsola());
                     Instruccion expresion = expresiones.get(i).operar(nuevaTabla);
                     if (expresion instanceof Error) {
                         return expresion;
                     }
-                    decla.setValor(expresion);
-                    Instruccion ins = decla.operar(nuevaTabla);
-                    if (ins instanceof Error) {
-                        return ins;
+//                    //decla.setValor(expresion);
+//                    //Instruccion ins = decla.operar(nuevaTabla);
+//                    if (ins instanceof Error) {
+//                        return ins;
+//                    }
+                    Valor valorExpresion = (Valor) expresion;
+                    if (valorExpresion.getTipo() != decla.getTipo()) {
+                        return new Error(Tipo.ERROR, "El parametro " + decla.getIdentificador() + " tiene signo incompatible con el valor " + valorExpresion.getTipo(), Tipo.SEMANTICO, fila, columna);
                     }
+                    nuevaTabla.agregarSimbolo(new Simbolo(decla.getTipo(), decla.getIdentificador(), valorExpresion.getValor(), decla.getFila(), decla.getColumna()));
                 } else {
-                    return new Error(Tipo.ERROR, "El simbolo ya esya declarado", Tipo.SEMANTICO, fila, columna);
+                    return new Error(Tipo.ERROR, "El simbolo ya esta declarado", Tipo.SEMANTICO, fila, columna);
                 }
             }
         }
 
+        if(super.getConsola() == null){
+            System.out.println("MGAGLOR");
+        }
         funcion.setConsola(super.getConsola());
         Instruccion ins = funcion.operar(nuevaTabla);
         if (ins instanceof Error) {
@@ -99,8 +108,12 @@ public class Llamada extends Instruccion {
             }
             return valorRetorno;
         } else {
-            return new Instruccion();   
+            return new Instruccion();
         }
+    }
+
+    public boolean comprobarTipo(Declaracion decla, Valor valor) {
+        return decla.getTipo() != valor.getTipo();
     }
 
 }

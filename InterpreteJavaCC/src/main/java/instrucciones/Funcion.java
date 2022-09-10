@@ -87,6 +87,10 @@ public class Funcion extends Instruccion {
 
     @Override
     public Instruccion operar(TablaSimbolos tabla) {
+        //tabla.recorrerTabla();
+        if(super.getConsola() == null){
+            System.out.println("FATYYYYY");
+        }
         for (Instruccion ins : instrucciones) {
             ins.setConsola(super.getConsola());
             if (ins instanceof Imprimir) {
@@ -96,7 +100,7 @@ public class Funcion extends Instruccion {
                 } else {
                     return val;
                 }
-            }else if (ins instanceof Retorno) {
+            } else if (ins instanceof Retorno) {
                 if (tipo != Tipo.VOID) {
                     Instruccion retorno = ins.operar(tabla);
                     if (retorno != null) {
@@ -111,6 +115,14 @@ public class Funcion extends Instruccion {
                 } else {
                     break;
                 }
+            } else if (ins instanceof Si) {
+                Instruccion valor = ins.operar(tabla);
+                if (valor instanceof Error) {
+                    return valor;
+                }
+                if (((Si) ins).getRetorno() != null) {
+                    valorRetorno = (Valor) ((Si) ins).getRetorno();
+                }
             } else {
                 Instruccion valor = ins.operar(tabla);
                 if (valor instanceof Error) {
@@ -121,4 +133,6 @@ public class Funcion extends Instruccion {
         return new Instruccion();
     }
 
+    
+    
 }

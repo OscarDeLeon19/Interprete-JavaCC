@@ -110,6 +110,7 @@ public class Editor extends javax.swing.JFrame {
             salida.operarSalida();
         } catch (Exception e) {
             System.out.println(e.toString());
+            e.printStackTrace();
             
         }
     }//GEN-LAST:event_botonAnalizarActionPerformed

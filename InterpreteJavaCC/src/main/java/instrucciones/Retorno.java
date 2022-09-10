@@ -48,6 +48,7 @@ public class Retorno extends Instruccion{
 
     @Override
     public Instruccion operar(TablaSimbolos tabla) {
+        expresion.setConsola(super.getConsola());
         if(expresion != null){
             Instruccion valor = expresion.operar(tabla);
             return valor;

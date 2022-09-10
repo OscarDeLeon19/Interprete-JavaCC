@@ -67,7 +67,7 @@ public class Declaracion extends Instruccion {
 
     public Instruccion operar(TablaSimbolos tabla) {
         Instruccion val = null;
-        
+        valor.setConsola(super.getConsola());
         if (this.valor != null) {
             val = valor.operar(tabla);
             if (val instanceof Error) {
@@ -92,7 +92,7 @@ public class Declaracion extends Instruccion {
             }
             return new Instruccion();
         } else {
-            return new Error(Tipo.ERROR, "La variable ya esta establecida", Tipo.SEMANTICO, fila, columna);
+            return new Error(Tipo.ERROR, "La variable " + id +" ya esta establecida", Tipo.SEMANTICO, fila, columna);
         }
     }
 
