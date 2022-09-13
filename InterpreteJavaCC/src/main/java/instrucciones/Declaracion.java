@@ -82,7 +82,7 @@ public class Declaracion extends Instruccion {
         }
 
         String id = identificador;
-        boolean comprobacion = tabla.buscarSimbolo(id);
+        boolean comprobacion = tabla.buscarSimboloLocal(id);
         if (comprobacion == false) {
             if (val == null) {
                 tabla.agregarSimbolo(new Simbolo(tipo, id, null, fila, columna));

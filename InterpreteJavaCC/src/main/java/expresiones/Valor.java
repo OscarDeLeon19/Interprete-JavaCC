@@ -71,6 +71,7 @@ public class Valor extends Instruccion {
             return new Valor(Tipo.VALOR, val, Tipo.CADENA, this.fila, this.columna);
         } else if (tipo == Tipo.IDENTIFICADOR) {
             Simbolo simbolo = tabla.obtenerSimbolo(String.valueOf(valor));
+            System.out.println("Simbolo: " + simbolo.getId() + " VAL; " +simbolo.getValor());
             if (simbolo != null) {
                 return new Valor(Tipo.VALOR,  simbolo.getValor(), simbolo.getTipo(), this.fila, this.columna);
             } else {

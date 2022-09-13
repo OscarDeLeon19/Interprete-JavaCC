@@ -68,7 +68,7 @@ public class Llamada extends Instruccion {
                 Declaracion decla = funcion.getParametros().get(i);
                 if (nuevaTabla.buscarSimboloLocal(decla.getIdentificador()) == false) {
                     expresiones.get(i).setConsola(super.getConsola());
-                    Instruccion expresion = expresiones.get(i).operar(nuevaTabla);
+                    Instruccion expresion = expresiones.get(i).operar(tabla);
                     if (expresion instanceof Error) {
                         return expresion;
                     }
@@ -77,20 +77,20 @@ public class Llamada extends Instruccion {
 //                    if (ins instanceof Error) {
 //                        return ins;
 //                    }
+
                     Valor valorExpresion = (Valor) expresion;
+                    System.out.println("VAL: "+valorExpresion.getValor());
                     if (valorExpresion.getTipo() != decla.getTipo()) {
                         return new Error(Tipo.ERROR, "El parametro " + decla.getIdentificador() + " tiene signo incompatible con el valor " + valorExpresion.getTipo(), Tipo.SEMANTICO, fila, columna);
                     }
                     nuevaTabla.agregarSimbolo(new Simbolo(decla.getTipo(), decla.getIdentificador(), valorExpresion.getValor(), decla.getFila(), decla.getColumna()));
+                    nuevaTabla.recorrerTabla();
                 } else {
                     return new Error(Tipo.ERROR, "El simbolo ya esta declarado", Tipo.SEMANTICO, fila, columna);
                 }
             }
         }
 
-        if(super.getConsola() == null){
-            System.out.println("MGAGLOR");
-        }
         funcion.setConsola(super.getConsola());
         Instruccion ins = funcion.operar(nuevaTabla);
         if (ins instanceof Error) {

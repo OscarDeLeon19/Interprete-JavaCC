@@ -22,6 +22,8 @@ import instrucciones.Asignacion;
 import instrucciones.Retorno;
 import instrucciones.Llamada;
 import instrucciones.Si;
+import instrucciones.Para;
+import instrucciones.Iteracion;
 
 public class Gramatica {
     
@@ -50,6 +52,7 @@ TOKEN : {
     | <DOUBLE: "Double">
     | <BOOLEAN: "Boolean">
     | <IMPRIMIR: "Imprimir">
+    | <PARA: "Para">
     | <MIENTRAS: "Mientras">
     | <FUNCION: "Funcion">
     | <RETORNO: "Return">
@@ -79,6 +82,8 @@ TOKEN : {
     | <AND: "&&">
     | <OR: "||">
     | <NOT: "!" >
+    | <INCREMENTO: "++" >
+    | <DECREMENTO: "--" >
     | <IDENTIFICADOR: ["a"-"z","A"-"Z", "_"] ( ["a"-"z","A"-"Z", "_"] | ["0"-"9"] )* >
     
 }
@@ -124,6 +129,42 @@ Instruccion InstruccionFuncion() :
     | e = Imprimir() {return e;}
     | e = Asignacion() {return e;}
     | e = Retorno() {return e;}
+    | e = Si() {return e;}
+    | e = Para() {return e;}
+}
+
+Instruccion Para():
+{Instruccion d; Instruccion e; Iteracion i; ArrayList<Instruccion> cuerpoCiclo = new ArrayList<Instruccion>();}
+{
+    <PARA> <PARIZ> d = DeclaracionCiclo() <PCOMA> e = Expresion() <PCOMA> i = Aumentar() <PARDE> cuerpoCiclo = BloqueCiclo()
+    {return new Para(Tipo.PARA, (Declaracion) d, e, i, cuerpoCiclo, token.beginLine, token.beginColumn);}
+}
+
+Instruccion DeclaracionCiclo():
+{Tipo t; Token tok; Instruccion e;}
+{
+    t = Tipo() tok = <IDENTIFICADOR> <IGUAL> e = Expresion() {return new Declaracion(Tipo.DECLARACION,tok.image, e, t, tok.beginLine, tok.beginColumn);}
+}
+
+Iteracion Aumentar():
+{}
+{
+    <INCREMENTO> {return new Iteracion(Tipo.INCREMENTO, token.beginLine, token.beginColumn, Tipo.ITERACION);}
+    | <DECREMENTO> {return new Iteracion(Tipo.DECREMENTO, token.beginLine, token.beginColumn, Tipo.ITERACION);}
+}
+
+ArrayList<Instruccion> BloqueCiclo():
+{ArrayList<Instruccion> instrucciones = new ArrayList<Instruccion>(); Instruccion e;}
+{
+  <LLAVE_I> (e=InstruccionCiclo() {instrucciones.add(e);})* <LLAVE_D> {return instrucciones;}
+}
+
+Instruccion InstruccionCiclo() :
+{Instruccion e;}
+{
+    e = Declaracion() {return e;}
+    | e = Imprimir() {return e;}
+    | e = Asignacion() {return e;}
     | e = Si() {return e;}
 }
 

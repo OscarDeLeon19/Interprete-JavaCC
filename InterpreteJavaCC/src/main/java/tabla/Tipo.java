@@ -36,5 +36,9 @@ public enum Tipo {
     ASIGNACION,
     RETORNO,
     LLAMADA,
-    SI
+    SI,
+    INCREMENTO,
+    DECREMENTO,
+    PARA,
+    ITERACION
 }

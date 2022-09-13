@@ -87,9 +87,9 @@ public class Operacion extends Instruccion {
             Instruccion nodoIzq = valIzq.operar(tabla);
             Instruccion nodoDer = valDer.operar(tabla);
 
-            if(super.getConsola()== null){
-                System.out.println("TODODOOOOO");
-            }
+            
+            
+            
             if (nodoIzq instanceof Error) {
                 return nodoIzq;
             }
@@ -100,6 +100,8 @@ public class Operacion extends Instruccion {
 
             Valor val1 = (Valor) nodoIzq;
             Valor val2 = (Valor) nodoDer;
+            System.out.println("OP1: " + val1.getValor()); 
+            System.out.println("OP2: " + val2.getValor()); 
             if (tipo == Tipo.SUMA) {
                 if (val1.getTipo() == Tipo.DECIMAL && val2.getTipo() == Tipo.DECIMAL) {
                     double izq = (double) val1.getValor();
