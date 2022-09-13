@@ -40,5 +40,6 @@ public enum Tipo {
     INCREMENTO,
     DECREMENTO,
     PARA,
-    ITERACION
+    ITERACION,
+    MIENTRAS
 }

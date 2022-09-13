@@ -18,6 +18,7 @@ import instrucciones.Llamada;
 import instrucciones.Si;
 import instrucciones.Para;
 import instrucciones.Iteracion;
+import instrucciones.Mientras;
 
 /** Token Manager. */
 public class GramaticaTokenManager implements GramaticaConstants

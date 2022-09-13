@@ -24,6 +24,7 @@ import instrucciones.Llamada;
 import instrucciones.Si;
 import instrucciones.Para;
 import instrucciones.Iteracion;
+import instrucciones.Mientras;
 
 public class Gramatica {
     
@@ -131,6 +132,14 @@ Instruccion InstruccionFuncion() :
     | e = Retorno() {return e;}
     | e = Si() {return e;}
     | e = Para() {return e;}
+    | e = Mientras() {return e;}
+}
+
+Instruccion Mientras():
+{Instruccion e; ArrayList<Instruccion> cuerpoCiclo = new ArrayList<Instruccion>();}
+{
+    <MIENTRAS> <PARIZ> e = Expresion() <PARDE> cuerpoCiclo = BloqueCiclo()
+    {return new Mientras(e, cuerpoCiclo, token.beginLine, token.beginColumn, Tipo.MIENTRAS);}
 }
 
 Instruccion Para():
@@ -166,6 +175,7 @@ Instruccion InstruccionCiclo() :
     | e = Imprimir() {return e;}
     | e = Asignacion() {return e;}
     | e = Si() {return e;}
+    | e = Para() {return e;}
 }
 
 Instruccion Si():

@@ -21,7 +21,6 @@ public class Llamada extends Instruccion {
         this.expresiones = expresiones;
         this.fila = fila;
         this.columna = columna;
-
     }
 
     public String getIdentificador() {
@@ -79,7 +78,6 @@ public class Llamada extends Instruccion {
 //                    }
 
                     Valor valorExpresion = (Valor) expresion;
-                    System.out.println("VAL: "+valorExpresion.getValor());
                     if (valorExpresion.getTipo() != decla.getTipo()) {
                         return new Error(Tipo.ERROR, "El parametro " + decla.getIdentificador() + " tiene signo incompatible con el valor " + valorExpresion.getTipo(), Tipo.SEMANTICO, fila, columna);
                     }
