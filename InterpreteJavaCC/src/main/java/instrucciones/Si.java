@@ -21,6 +21,7 @@ public class Si extends Instruccion {
     private ArrayList<Instruccion> cuerpo;
     private ArrayList<Instruccion> cuerpo_else;
     private Valor retorno = null;
+    private Instruccion valorCiclo = null;
     private int fila;
     private int columna;
 
@@ -81,8 +82,17 @@ public class Si extends Instruccion {
         this.retorno = retorno;
     }
 
+    public Instruccion getValorCiclo() {
+        return valorCiclo;
+    }
+
+    public void setValorCiclo(Instruccion valorCiclo) {
+        this.valorCiclo = valorCiclo;
+    }
+
     @Override
     public Instruccion operar(TablaSimbolos tabla) {
+        valorCiclo = null;
         Instruccion expresion = relacion.operar(tabla);
         if (expresion instanceof Error) {
             return expresion;
@@ -106,6 +116,9 @@ public class Si extends Instruccion {
                     } else {
                         return val;
                     }
+                } else if (ins instanceof Detener || ins instanceof Continuar) {
+                    valorCiclo = ins;
+                    break;
                 } else if (ins instanceof Retorno) {
                     Instruccion valor = ins.operar(nuevaTabla);
                     if (valor instanceof Error) {
@@ -140,6 +153,9 @@ public class Si extends Instruccion {
                         } else {
                             return val;
                         }
+                    } else if (ins instanceof Detener || ins instanceof Continuar) {
+                        valorCiclo = ins;
+                        break;
                     } else if (ins instanceof Retorno) {
                         Instruccion valor = ins.operar(nuevaTabla);
                         if (valor instanceof Error) {

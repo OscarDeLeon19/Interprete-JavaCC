@@ -40,9 +40,9 @@ public interface GramaticaConstants {
   /** RegularExpression Id. */
   int RETORNO = 15;
   /** RegularExpression Id. */
-  int BREAK = 16;
+  int DETENER = 16;
   /** RegularExpression Id. */
-  int CONTINUE = 17;
+  int CONTINUAR = 17;
   /** RegularExpression Id. */
   int SI = 18;
   /** RegularExpression Id. */
@@ -113,20 +113,20 @@ public interface GramaticaConstants {
     "<DECIMAL>",
     "\"true\"",
     "\"false\"",
-    "\"Cadena\"",
-    "\"Int\"",
-    "\"Void\"",
-    "\"Double\"",
-    "\"Boolean\"",
-    "\"Imprimir\"",
-    "\"Para\"",
-    "\"Mientras\"",
-    "\"Funcion\"",
-    "\"Return\"",
-    "\"Break\"",
-    "\"continue\"",
-    "\"Si\"",
-    "\"Sino\"",
+    "\"cadena\"",
+    "\"int\"",
+    "\"void\"",
+    "\"double\"",
+    "\"boolean\"",
+    "\"imprimir\"",
+    "\"para\"",
+    "\"mientras\"",
+    "\"funcion\"",
+    "\"retorno\"",
+    "\"detener\"",
+    "\"continuar\"",
+    "\"si\"",
+    "\"sino\"",
     "\";\"",
     "\"(\"",
     "\")\"",

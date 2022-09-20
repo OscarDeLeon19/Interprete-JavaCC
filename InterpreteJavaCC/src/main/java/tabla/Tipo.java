@@ -41,5 +41,7 @@ public enum Tipo {
     DECREMENTO,
     PARA,
     ITERACION,
-    MIENTRAS
+    MIENTRAS,
+    DETENER,
+    CONTINUAR
 }

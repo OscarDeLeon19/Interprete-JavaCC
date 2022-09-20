@@ -75,7 +75,7 @@ public class Para extends Instruccion {
 
     @Override
     public Instruccion operar(TablaSimbolos tabla) {
-        
+
         TablaSimbolos nuevaTabla = new TablaSimbolos(tabla);
         Instruccion insDecla = declaracion.operar(nuevaTabla);
         if (insDecla instanceof Error) {
@@ -94,15 +94,34 @@ public class Para extends Instruccion {
 
         iterador.setIdentificador(declaracion.getIdentificador());
         boolean valorExpresion = (boolean) rel.getValor();
+        boolean fin = false;
         while (valorExpresion == true) {
             for (Instruccion ins : cuerpo) {
                 ins.setConsola(super.getConsola());
-                if (ins instanceof Imprimir) {
+                if (ins instanceof Detener) {
+                    fin = true;
+                    break;
+                } else if (ins instanceof Continuar) {
+                    break;
+                } else if (ins instanceof Imprimir) {
                     Instruccion val = ins.operar(nuevaTabla);
                     if (val instanceof Valor) {
                         super.getConsola().append(String.valueOf(((Valor) val).getValor()) + "\n");
                     } else {
                         return val;
+                    }
+                } else if (ins instanceof Si) {
+                    Instruccion valor = ins.operar(nuevaTabla);
+                    if (valor instanceof Error) {
+                        return valor;
+                    }
+                    if (((Si) ins).getValorCiclo()!= null) {
+                        if (((Si) ins).getValorCiclo() instanceof Detener){
+                            fin = true;
+                            break;
+                        } else {
+                            break;
+                        }
                     }
                 } else {
                     Instruccion valor = ins.operar(nuevaTabla);
@@ -110,6 +129,9 @@ public class Para extends Instruccion {
                         return valor;
                     }
                 }
+            }
+            if (fin == true) {
+                break;
             }
             Instruccion iteracion = iterador.operar(nuevaTabla);
             if (iteracion instanceof Error) {
@@ -126,7 +148,7 @@ public class Para extends Instruccion {
             if (valorRel.getTipo() != Tipo.BOOLEAN) {
                 return new Error(Tipo.ERROR, "La expresion debe ser relacional", Tipo.SEMANTICO, fila, columna);
             }
-            
+
             valorExpresion = (boolean) valorRel.getValor();
         }
         return new Instruccion();

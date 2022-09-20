@@ -20,6 +20,8 @@ import instrucciones.Si;
 import instrucciones.Para;
 import instrucciones.Iteracion;
 import instrucciones.Mientras;
+import instrucciones.Detener;
+import instrucciones.Continuar;
 
 public class Gramatica implements GramaticaConstants {
 
@@ -186,6 +188,9 @@ public class Gramatica implements GramaticaConstants {
       case BOOLEAN:
       case IMPRIMIR:
       case PARA:
+      case MIENTRAS:
+      case DETENER:
+      case CONTINUAR:
       case SI:
       case IDENTIFICADOR:
         ;
@@ -228,11 +233,39 @@ public class Gramatica implements GramaticaConstants {
       e = Para();
                   {if (true) return e;}
       break;
+    case MIENTRAS:
+      e = Mientras();
+                      {if (true) return e;}
+      break;
+    case DETENER:
+      e = Detener();
+                     {if (true) return e;}
+      break;
+    case CONTINUAR:
+      e = Continuar();
+                       {if (true) return e;}
+      break;
     default:
       jj_la1[5] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Instruccion Detener() throws ParseException {
+ Instruccion e;
+    jj_consume_token(DETENER);
+    jj_consume_token(PCOMA);
+                       {if (true) return new Detener(Tipo.DETENER);}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Instruccion Continuar() throws ParseException {
+ Instruccion e;
+    jj_consume_token(CONTINUAR);
+    jj_consume_token(PCOMA);
+                         {if (true) return new Continuar(Tipo.DETENER);}
     throw new Error("Missing return statement in function");
   }
 
@@ -268,7 +301,11 @@ public class Gramatica implements GramaticaConstants {
       case DOUBLE:
       case BOOLEAN:
       case IMPRIMIR:
+      case PARA:
+      case MIENTRAS:
       case RETORNO:
+      case DETENER:
+      case CONTINUAR:
       case SI:
       case IDENTIFICADOR:
         ;
@@ -310,6 +347,22 @@ public class Gramatica implements GramaticaConstants {
     case SI:
       e = Si();
                 {if (true) return e;}
+      break;
+    case PARA:
+      e = Para();
+                  {if (true) return e;}
+      break;
+    case MIENTRAS:
+      e = Mientras();
+                      {if (true) return e;}
+      break;
+    case DETENER:
+      e = Detener();
+                     {if (true) return e;}
+      break;
+    case CONTINUAR:
+      e = Continuar();
+                       {if (true) return e;}
       break;
     default:
       jj_la1[8] = jj_gen;
@@ -859,7 +912,7 @@ public class Gramatica implements GramaticaConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x46c0,0x46c0,0x4bec0,0x0,0x41ec0,0x41ec0,0x80000,0x48ec0,0x48ec0,0x4bec0,0x0,0x6c0,0x200000,0x80000000,0x1020003c,0x7c0,0x6c0,0x0,0x1020003c,0x0,0x0,0x0,0x0,0x0,0x0,0x18000000,0x18000000,0x60000000,0x60000000,0x1020003c,0x200000,0x20003c,};
+      jj_la1_0 = new int[] {0x46c0,0x46c0,0x4bec0,0x0,0x73ec0,0x73ec0,0x80000,0x7bec0,0x7bec0,0x4bec0,0x0,0x6c0,0x200000,0x80000000,0x1020003c,0x7c0,0x6c0,0x0,0x1020003c,0x0,0x0,0x0,0x0,0x0,0x0,0x18000000,0x18000000,0x60000000,0x60000000,0x1020003c,0x200000,0x20003c,};
    }
    private static void jj_la1_init_1() {
       jj_la1_1 = new int[] {0x1000,0x1000,0x1000,0xc00,0x1000,0x1000,0x0,0x1000,0x1000,0x1000,0x40,0x0,0x0,0x0,0x201200,0x0,0x0,0x40,0x201200,0x100,0x80,0x30,0x30,0xf,0xf,0x0,0x0,0x0,0x0,0x201200,0x0,0x201000,};

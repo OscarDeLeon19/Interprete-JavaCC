@@ -25,6 +25,8 @@ import instrucciones.Si;
 import instrucciones.Para;
 import instrucciones.Iteracion;
 import instrucciones.Mientras;
+import instrucciones.Detener;
+import instrucciones.Continuar;
 
 public class Gramatica {
     
@@ -47,20 +49,20 @@ TOKEN : {
     | <DECIMAL: (["0"-"9"])+"."(["0"-"9"])+>
     | <TRUE: "true">    
     | <FALSE: "false">
-    | <CADENA: "Cadena">
-    | <INT: "Int">
-    | <VOID: "Void">
-    | <DOUBLE: "Double">
-    | <BOOLEAN: "Boolean">
-    | <IMPRIMIR: "Imprimir">
-    | <PARA: "Para">
-    | <MIENTRAS: "Mientras">
-    | <FUNCION: "Funcion">
-    | <RETORNO: "Return">
-    | <BREAK: "Break">
-    | <CONTINUE: "continue">
-    | <SI: "Si">
-    | <SINO: "Sino">
+    | <CADENA: "cadena">
+    | <INT: "int">
+    | <VOID: "void">
+    | <DOUBLE: "double">
+    | <BOOLEAN: "boolean">
+    | <IMPRIMIR: "imprimir">
+    | <PARA: "para">
+    | <MIENTRAS: "mientras">
+    | <FUNCION: "funcion">
+    | <RETORNO: "retorno">
+    | <DETENER: "detener">
+    | <CONTINUAR: "continuar">
+    | <SI: "si">
+    | <SINO: "sino">
     | <PCOMA: ";">
     | <PARIZ: "(">
     | <PARDE: ")">
@@ -175,7 +177,22 @@ Instruccion InstruccionCiclo() :
     | e = Imprimir() {return e;}
     | e = Asignacion() {return e;}
     | e = Si() {return e;}
-    | e = Para() {return e;}
+    | e = Para() {return e;} 
+    | e = Mientras() {return e;}
+    | e = Detener() {return e;}
+    | e = Continuar() {return e;}
+}
+
+Instruccion Detener():
+{Instruccion e;}
+{
+    <DETENER> <PCOMA> {return new Detener(Tipo.DETENER);}
+}
+
+Instruccion Continuar():
+{Instruccion e;}
+{
+    <CONTINUAR> <PCOMA> {return new Continuar(Tipo.DETENER);}
 }
 
 Instruccion Si():
@@ -202,7 +219,11 @@ Instruccion InstruccionSi() :
     | e = Imprimir() {return e;}
     | e = Asignacion() {return e;}
     | e = Retorno() {return e;}
-    | e = Si() {return e;}
+    | e = Si() {return e;}   
+    | e = Para() {return e;} 
+    | e = Mientras() {return e;}
+    | e = Detener() {return e;}
+    | e = Continuar() {return e;}
 }
 
 
