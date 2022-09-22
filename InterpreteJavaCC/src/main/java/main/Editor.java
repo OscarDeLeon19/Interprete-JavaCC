@@ -57,6 +57,7 @@ public class Editor extends javax.swing.JFrame {
         consola.setColumns(20);
         consola.setForeground(new java.awt.Color(255, 255, 51));
         consola.setRows(5);
+        consola.setTabSize(2);
         consola.setDisabledTextColor(new java.awt.Color(255, 255, 51));
         jScrollPane2.setViewportView(consola);
 
@@ -99,16 +100,19 @@ public class Editor extends javax.swing.JFrame {
 
     private void botonAnalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonAnalizarActionPerformed
         try {
+            Salida salida = new Salida();
+            salida.setConsola(consola);
             consola.setText("");
             String texto = areaTexto.getText();
             StringReader str = new StringReader(texto);
             Gramatica gram = new Gramatica(str);
-            Salida salida = new Salida();
+            
             gram.setSalida(salida);
             gram.Analizar();
-            salida.setConsola(consola);
+            
             salida.operarSalida();
-        } catch (Exception e) {
+        } catch (ParseException e) {
+            
             System.out.println(e.toString());
             e.printStackTrace();
             

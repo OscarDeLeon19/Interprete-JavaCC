@@ -115,7 +115,19 @@ SKIP : {
 void Analizar():
 {Instruccion ins; }
 {
-    (ins = Instruccion() {salida.agregarInstruccion(ins);})+ <EOF>
+    try{
+        (ins = Instruccion() {salida.agregarInstruccion(ins);})* <EOF>
+    } catch(ParseException exc){
+        StringBuffer expected = new StringBuffer();
+            for (int i = 0; i < exc.expectedTokenSequences.length; i++) {
+                for (int j = 0; j < exc.expectedTokenSequences[i].length; j++) {
+                    expected.append("\t"+tokenImage[exc.expectedTokenSequences[i][j]]).append("\n");
+                }
+            }
+            salida.agregarErrorSintactico("Error en el token: \"" 
+                    + exc.currentToken.next.image + "\"",exc.currentToken.next.beginLine, 
+                      exc.currentToken.next.beginColumn, expected.toString());  
+    }
 }
 Instruccion Instruccion() :
 {Instruccion e;}

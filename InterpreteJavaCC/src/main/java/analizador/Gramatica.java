@@ -33,25 +33,37 @@ public class Gramatica implements GramaticaConstants {
 
   final public void Analizar() throws ParseException {
  Instruccion ins;
-    label_1:
-    while (true) {
-      ins = Instruccion();
-                          salida.agregarInstruccion(ins);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case CADENA:
-      case INT:
-      case DOUBLE:
-      case BOOLEAN:
-      case FUNCION:
-      case IDENTIFICADOR:
-        ;
-        break;
-      default:
-        jj_la1[0] = jj_gen;
-        break label_1;
+    try {
+      label_1:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case CADENA:
+        case INT:
+        case DOUBLE:
+        case BOOLEAN:
+        case FUNCION:
+        case IDENTIFICADOR:
+          ;
+          break;
+        default:
+          jj_la1[0] = jj_gen;
+          break label_1;
+        }
+        ins = Instruccion();
+                              salida.agregarInstruccion(ins);
       }
+      jj_consume_token(0);
+    } catch (ParseException exc) {
+        StringBuffer expected = new StringBuffer();
+            for (int i = 0; i < exc.expectedTokenSequences.length; i++) {
+                for (int j = 0; j < exc.expectedTokenSequences[i].length; j++) {
+                    expected.append("\t"+tokenImage[exc.expectedTokenSequences[i][j]]).append("\n");
+                }
+            }
+            salida.agregarErrorSintactico("Error en el token: \""
+                    + exc.currentToken.next.image + "\"",exc.currentToken.next.beginLine,
+                      exc.currentToken.next.beginColumn, expected.toString());
     }
-    jj_consume_token(0);
   }
 
   final public Instruccion Instruccion() throws ParseException {
