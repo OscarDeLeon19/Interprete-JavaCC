@@ -1014,23 +1014,29 @@ public Token getNextToken()
 
 void SkipLexicalActions(Token matchedToken)
 {
-   switch(jjmatchedKind)
-   {
-      case 49 :
-         if (image == null)
-            image = new StringBuffer();
-         image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
-                               System.out.println("Comentario");
-         break;
-      case 51 :
-         if (image == null)
-            image = new StringBuffer();
-         image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
-               System.out.println("error");
-         break;
-      default :
-         break;
-   }
+    boolean error = false;
+    switch (jjmatchedKind) {
+            case 49:
+                if (image == null) {
+                    image = new StringBuffer();
+                }
+                image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
+                System.out.println("Comentario");
+                break;
+            case 51:
+                if (image == null) {
+                    image = new StringBuffer();
+                }
+                image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
+                error = true;
+                break;
+            default:
+                break;
+        }
+        if (error == true) {
+            Token t = jjFillToken();
+            throw new TokenMgrError("Error con el lexema: \"" + t.image + "\"", t.beginLine, t.beginColumn);
+        }
 }
 private void jjCheckNAdd(int state)
 {

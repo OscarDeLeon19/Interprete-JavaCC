@@ -119,6 +119,27 @@ public class TokenMgrError extends Error
       return super.getMessage();
    }
 
+   /**
+    * Codigo para obtener la linea y columna de los errores Lexicos
+    */
+   private int beginLine;
+   private int beginColumn;
+
+   public int getBeginLine() {
+        return beginLine;
+   }
+
+   public int getBeginColumn() {
+        return beginColumn;
+   }
+   
+   public TokenMgrError(String message, int line, int column){
+       super(message);
+       this.beginLine = line;
+       this.beginColumn = column;
+   }
+   
+   
    /*
     * Constructors of various flavors follow.
     */

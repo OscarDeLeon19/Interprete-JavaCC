@@ -63,6 +63,9 @@ public class Gramatica implements GramaticaConstants {
             salida.agregarErrorSintactico("Error en el token: \""
                     + exc.currentToken.next.image + "\"",exc.currentToken.next.beginLine,
                       exc.currentToken.next.beginColumn, expected.toString());
+    } catch (TokenMgrError err) {
+        salida.agregarErrorLexico(err.getMessage(), err.getBeginLine(), err.getBeginColumn());
+        Analizar();
     }
   }
 

@@ -38,11 +38,10 @@ public class Salida {
     }
 
     
-    public void agregarErrorLexico(String error, int fila, int columna, String expected) {
+    public void agregarErrorLexico(String error, int fila, int columna) {
         hayError = true;
         Error errors = new Error(Tipo.ERROR, error, Tipo.LEXICO, fila, columna);
         consola.append(errors.getMensaje());
-        consola.append("Se esperaba cualquiera de los siguientes tokens: " + expected);
     }
     
     public void agregarErrorSintactico(String error, int fila, int columna, String expected) {

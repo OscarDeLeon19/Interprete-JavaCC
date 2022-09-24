@@ -7,6 +7,7 @@ package main;
 
 import Analizador.Gramatica;
 import Analizador.ParseException;
+import Analizador.TokenMgrError;
 import instrucciones.Instruccion;
 import java.io.StringReader;
 import java.util.logging.Level;
@@ -111,11 +112,8 @@ public class Editor extends javax.swing.JFrame {
             gram.Analizar();
             
             salida.operarSalida();
-        } catch (ParseException e) {
-            
-            System.out.println(e.toString());
+        } catch (Exception e){
             e.printStackTrace();
-            
         }
     }//GEN-LAST:event_botonAnalizarActionPerformed
 

@@ -98,7 +98,7 @@ SKIP : {
     | "\n"
     | <"//" (~["\n", "\r"])*> {System.out.println("Comentario");}
     | <"/*" (~["*"])* "*" ("*" | ~["*","/"] (~["*"])* "*")* "/">
-    | <(~[])> {System.out.println("error");}
+    | <(~[])> {System.out.println("Error");}
 
 }
 
@@ -127,6 +127,9 @@ void Analizar():
             salida.agregarErrorSintactico("Error en el token: \"" 
                     + exc.currentToken.next.image + "\"",exc.currentToken.next.beginLine, 
                       exc.currentToken.next.beginColumn, expected.toString());  
+    } catch(TokenMgrError err){
+        salida.agregarErrorLexico(err.getMessage(), err.getBeginLine(), err.getBeginColumn());
+        Analizar();
     }
 }
 Instruccion Instruccion() :
