@@ -12,6 +12,14 @@ public class Mientras extends Instruccion {
     private int fila;
     private int columna;
 
+    /**
+     * Constructor de la instruccion mientras
+     * @param relacion La relacion que comprobará al inicio.
+     * @param cuerpo El cuerpo de instrucciones
+     * @param fila La fila en donde se hace la declaracion
+     * @param columna La columna en donde se hace la declaracion
+     * @param id El identificador de la instruccion.
+     */
     public Mientras(Instruccion relacion, ArrayList<Instruccion> cuerpo, int fila, int columna, Tipo id) {
         super(id);
         this.relacion = relacion;
@@ -52,9 +60,14 @@ public class Mientras extends Instruccion {
         this.columna = columna;
     }
 
+    /**
+     * Opera la instruccion Mientras
+     * @param tabla La tabla de simbolos
+     * @return Una instruccion
+     */
     @Override
     public Instruccion operar(TablaSimbolos tabla) {
-
+        // Se crea la nueva tabla para el cuerpo de instrucciones
         TablaSimbolos nuevaTabla = new TablaSimbolos(tabla);
 
         Instruccion insRela = relacion.operar(nuevaTabla);
@@ -67,14 +80,17 @@ public class Mientras extends Instruccion {
             return new errores.Error(Tipo.ERROR, "La expresion debe ser relacional", Tipo.SEMANTICO, fila, columna);
         }
 
+        // Obtenelos el valor de la expresion. Si esta es verdadera se ejecuta el cuerpo del mientras
         boolean valorExpresion = (boolean) rel.getValor();
         boolean fin = false;
         while (valorExpresion == true) {
             for (Instruccion ins : cuerpo) {
                 ins.setConsola(super.getConsola());
+                // Si la instruccion es Detener, se finaliza el ciclo
                 if (ins instanceof Detener) {
                     fin = true;
                     break;
+                // Si la instruccion es un continuar, se continuara con la siguiente iteracion
                 } else if (ins instanceof Continuar) {
                     break;
                 } else if (ins instanceof Imprimir) {
@@ -107,8 +123,9 @@ public class Mientras extends Instruccion {
             if (fin == true) {
                 break;
             }
+            // Se opera de nuevo la expresion relacional
             Instruccion nuevaExpresion = relacion.operar(nuevaTabla);
-
+            
             if (nuevaExpresion instanceof errores.Error) {
                 return nuevaExpresion;
             }

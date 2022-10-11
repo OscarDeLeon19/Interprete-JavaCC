@@ -25,6 +25,15 @@ public class Si extends Instruccion {
     private int fila;
     private int columna;
 
+    /**
+     * Constructor de la instruccion if
+     * @param id El identificador de la instruccion
+     * @param relacion La relacion de la instruccion
+     * @param cuerpo El cuerpo de la instruccion verdadero
+     * @param cuerpo_else El cuerpo de la instruccion falsa
+     * @param fila La fila en donde se declara
+     * @param columna La columna en donde se declara
+     */
     public Si(Tipo id, Instruccion relacion, ArrayList<Instruccion> cuerpo, ArrayList<Instruccion> cuerpo_else, int fila, int columna) {
         super(id);
         this.relacion = relacion;
@@ -89,22 +98,30 @@ public class Si extends Instruccion {
     public void setValorCiclo(Instruccion valorCiclo) {
         this.valorCiclo = valorCiclo;
     }
-
+    
+    /**
+     * Opera la instruccion
+     * @param tabla La tabla de simbolos
+     * @return Retorna una funcion
+     */
     @Override
     public Instruccion operar(TablaSimbolos tabla) {
+        // Reinicia el valor del ciclo
         valorCiclo = null;
+        // Opera la relacion
         Instruccion expresion = relacion.operar(tabla);
         if (expresion instanceof Error) {
             return expresion;
         }
-
+        
         Valor operada = (Valor) expresion;
         if (operada.getTipo() != Tipo.BOOLEAN) {
             return new Error(Tipo.ERROR, "La condicion del Si debe ser booleana", Tipo.SEMANTICO, fila, columna);
         }
-
+        // Obtiene el valor de la instruccion
         boolean bandera = (boolean) operada.getValor();
 
+        // Si el valor es verdadero, se ejecuta el cuerpo
         if (bandera == true) {
             TablaSimbolos nuevaTabla = new TablaSimbolos(tabla);
             for (Instruccion ins : cuerpo) {
@@ -142,6 +159,7 @@ public class Si extends Instruccion {
                 }
             }
         } else {
+            // Si es falso, se ejecuta el cuerpo_else
             if (cuerpo_else.isEmpty() == false) {
                 TablaSimbolos nuevaTabla = new TablaSimbolos(tabla);
                 for (Instruccion ins : cuerpo_else) {

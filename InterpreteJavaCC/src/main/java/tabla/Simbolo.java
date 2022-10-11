@@ -10,6 +10,14 @@ public class Simbolo {
     private int fila;
     private int columna;
 
+    /**
+     * Constructor de la clase simbolo
+     * @param tipo El tipo de dato
+     * @param id El identificador del simbolo
+     * @param valor El valor del simbolo
+     * @param fila la fila en donde se declara
+     * @param columna La columna en donde se declara
+     */
     public Simbolo(Tipo tipo, String id, Object valor, int fila, int columna) {
         this.tipo = tipo;
         this.id = id;

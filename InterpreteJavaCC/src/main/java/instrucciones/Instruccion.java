@@ -14,9 +14,23 @@ import tabla.Tipo;
  * @author oscar
  */
 public class Instruccion {
-    
+
     private Tipo id;
     private JTextArea consola;
+
+    /**
+     * Constructor de la clase instruccion.
+     * @param id El tipo de instruccion
+     */
+    public Instruccion(Tipo id) {
+        this.id = id;
+    }
+
+    /**
+     * Constructor vacio
+     */
+    public Instruccion() {
+    }
 
     public Tipo getId() {
         return id;
@@ -33,17 +47,9 @@ public class Instruccion {
     public void setConsola(JTextArea consola) {
         this.consola = consola;
     }
-  
-    public Instruccion(Tipo id) {
-        this.id = id;
-    }
 
-    public Instruccion() {
-    }
-    
-    public Instruccion operar(TablaSimbolos tabla){
+    public Instruccion operar(TablaSimbolos tabla) {
         return null;
     }
-    
-    
+
 }

@@ -14,6 +14,14 @@ public class Valor extends Instruccion {
     private int fila;
     private int columna;
 
+    /**
+     * Constructor de la instruccion valor
+     * @param id El id de la instruccion
+     * @param valor El valor que se obtendra
+     * @param tipo El tipo de dato del valor
+     * @param fila La fila donde se declaro el valor
+     * @param columna La columna donde se declaro
+     */
     public Valor(Tipo id, Object valor, Tipo tipo, int fila, int columna) {
         super(id);
         this.valor = valor;
@@ -56,6 +64,7 @@ public class Valor extends Instruccion {
 
     @Override
     public Instruccion operar(TablaSimbolos tabla) {
+        // Dependiendo del tipo de dato, se realizaran diferentes acciones
         if (tipo == Tipo.ENTERO) {
             return new Valor(Tipo.VALOR, Integer.parseInt(String.valueOf(valor)), Tipo.ENTERO, this.fila, this.columna);
         } else if (tipo == Tipo.DECIMAL) {
@@ -63,12 +72,14 @@ public class Valor extends Instruccion {
         } else if (tipo == Tipo.BOOLEAN) {
             return this;
         } else if (tipo == Tipo.CADENA) {
+            // Se retiran las comillas de la cadena si empieza con una
             String val = String.valueOf(valor);
             if (val.startsWith("\"")) {
                 val = val.substring(1, val.length() - 1);
             }
             return new Valor(Tipo.VALOR, val, Tipo.CADENA, this.fila, this.columna);
         } else if (tipo == Tipo.IDENTIFICADOR) {
+            // Se busca el simbolo en la tabla y se retorna su valor
             Simbolo simbolo = tabla.obtenerSimbolo(String.valueOf(valor));
             if (simbolo != null) {
                 return new Valor(Tipo.VALOR,  simbolo.getValor(), simbolo.getTipo(), this.fila, this.columna);
@@ -76,9 +87,11 @@ public class Valor extends Instruccion {
                 return new Error(Tipo.ERROR, "No se encontro el simbolo solicitado", Tipo.SEMANTICO, fila, columna);
             }
         } else if (tipo == Tipo.LLAMADA) {
+            // Se busca la funcion a la que se le realiza la llamada.
             Llamada llamada = (Llamada) valor;
             boolean comprobacion = tabla.buscarFuncion(llamada.getIdentificador());
             if (comprobacion == true) {
+                // Si la funcion existe, se opera la llamada.
                 llamada.setConsola(super.getConsola());
                 Instruccion valorLlamada = llamada.operar(tabla);
                 if (valorLlamada instanceof Error) {

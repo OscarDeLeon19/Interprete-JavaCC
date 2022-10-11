@@ -112,12 +112,19 @@ SKIP : {
    <STRING:"\""> : DEFAULT 
 }
 
+
+/**
+ * Metodo inicial
+ */
 void Analizar():
 {Instruccion ins; }
 {
     try{
         (ins = Instruccion() {salida.agregarInstruccion(ins);})* <EOF>
     } catch(ParseException exc){
+
+        // Codigo para crear los errores sintactivos
+
         StringBuffer expected = new StringBuffer();
             for (int i = 0; i < exc.expectedTokenSequences.length; i++) {
                 for (int j = 0; j < exc.expectedTokenSequences[i].length; j++) {
@@ -128,10 +135,19 @@ void Analizar():
                     + exc.currentToken.next.image + "\"",exc.currentToken.next.beginLine, 
                       exc.currentToken.next.beginColumn, expected.toString());  
     } catch(TokenMgrError err){
+        
+        // Se captura el error lexico y se crea.
+
         salida.agregarErrorLexico(err.getMessage(), err.getBeginLine(), err.getBeginColumn());
         Analizar();
     }
 }
+
+/**
+    instruccion -> declaracion 
+                 | asignacion
+                 | funcion
+*/
 Instruccion Instruccion() :
 {Instruccion e;}
 {
@@ -140,6 +156,15 @@ Instruccion Instruccion() :
     | e = Funcion() {return e;}
 }
 
+/**
+    instruccionFuncion -> declaracion 
+                 | asignacion
+                 | imprimir
+                 | retorno
+                 | si
+                 | para
+                 | mientras
+*/
 Instruccion InstruccionFuncion() :
 {Instruccion e;}
 {
@@ -152,6 +177,9 @@ Instruccion InstruccionFuncion() :
     | e = Mientras() {return e;}
 }
 
+/**
+    mientras -> MIENTRAS ( expresion ) cuerpoCiclo 
+*/
 Instruccion Mientras():
 {Instruccion e; ArrayList<Instruccion> cuerpoCiclo = new ArrayList<Instruccion>();}
 {
@@ -159,6 +187,9 @@ Instruccion Mientras():
     {return new Mientras(e, cuerpoCiclo, token.beginLine, token.beginColumn, Tipo.MIENTRAS);}
 }
 
+/**
+    para -> PARA ( declaracionCiclo ; expresion ; aumentar ) cuerpoCiclo
+*/
 Instruccion Para():
 {Instruccion d; Instruccion e; Iteracion i; ArrayList<Instruccion> cuerpoCiclo = new ArrayList<Instruccion>();}
 {
@@ -166,12 +197,19 @@ Instruccion Para():
     {return new Para(Tipo.PARA, (Declaracion) d, e, i, cuerpoCiclo, token.beginLine, token.beginColumn);}
 }
 
+/**
+    declaracionCiclo -> tipo IDENTIFICADOR expresion
+*/
 Instruccion DeclaracionCiclo():
 {Tipo t; Token tok; Instruccion e;}
 {
     t = Tipo() tok = <IDENTIFICADOR> <IGUAL> e = Expresion() {return new Declaracion(Tipo.DECLARACION,tok.image, e, t, tok.beginLine, tok.beginColumn);}
 }
 
+/**
+    aumentar -> ++
+                | --
+*/
 Iteracion Aumentar():
 {}
 {
@@ -179,12 +217,26 @@ Iteracion Aumentar():
     | <DECREMENTO> {return new Iteracion(Tipo.DECREMENTO, token.beginLine, token.beginColumn, Tipo.ITERACION);}
 }
 
+/**
+    bloqueCiclo -> { instruccionCiclo }
+                | { }
+*/
 ArrayList<Instruccion> BloqueCiclo():
 {ArrayList<Instruccion> instrucciones = new ArrayList<Instruccion>(); Instruccion e;}
 {
   <LLAVE_I> (e=InstruccionCiclo() {instrucciones.add(e);})* <LLAVE_D> {return instrucciones;}
 }
 
+/**
+    instruccionCiclo -> declaracion
+                    | imprimir
+                    | asignacion
+                    | si
+                    | para
+                    | mientras
+                    | detener
+                    | continuar
+*/
 Instruccion InstruccionCiclo() :
 {Instruccion e;}
 {
@@ -198,18 +250,27 @@ Instruccion InstruccionCiclo() :
     | e = Continuar() {return e;}
 }
 
+/**
+    detener -> DETENER ;
+*/
 Instruccion Detener():
 {Instruccion e;}
 {
     <DETENER> <PCOMA> {return new Detener(Tipo.DETENER);}
 }
 
+/**
+    continuar -> CONTINUAR ;
+*/
 Instruccion Continuar():
 {Instruccion e;}
 {
     <CONTINUAR> <PCOMA> {return new Continuar(Tipo.DETENER);}
 }
 
+/**
+    si -> SI ( expresion ) bloqueSi
+*/
 Instruccion Si():
 {
     Instruccion e; ArrayList<Instruccion> cuerpoSi = new ArrayList<Instruccion>();
@@ -221,12 +282,27 @@ Instruccion Si():
         {return new Si(Tipo.SI, e, cuerpoSi, cuerpoElse, token.beginLine, token.beginColumn);}
 }
 
+/**
+    bloqueSi -> { instruccionSi }
+            | { }
+*/
 ArrayList<Instruccion> BloqueSi():
 {ArrayList<Instruccion> instrucciones = new ArrayList<Instruccion>(); Instruccion e;}
 {
   <LLAVE_I> (e=InstruccionSi() {instrucciones.add(e);})* <LLAVE_D> {return instrucciones;}
 }
 
+/**
+    instruccionSi -> declaracion
+                | imprimir
+                | asignacion
+                | retorno
+                | si
+                | para
+                | mientras
+                | detener
+                | continuar
+*/
 Instruccion InstruccionSi() :
 {Instruccion e;}
 {
@@ -241,7 +317,9 @@ Instruccion InstruccionSi() :
     | e = Continuar() {return e;}
 }
 
-
+/**
+    funcion -> FUNCION funcionTipo IDENTIFICADOR ( listaParametros ) bloque
+*/
 Instruccion Funcion():
 {Token id; ArrayList<Instruccion> instrucciones; ArrayList<Declaracion> declaraciones; Tipo tipo;}
 {
@@ -249,12 +327,21 @@ Instruccion Funcion():
     {return new Funcion(Tipo.FUNCION, id.image, declaraciones, instrucciones, tipo, id.beginLine, id.beginColumn);}
 }
 
+/**
+    bloque -> { instruccionFuncion }
+            | { }
+*/
 ArrayList<Instruccion> Bloque():
 {ArrayList<Instruccion> instrucciones = new ArrayList<Instruccion>(); Instruccion e;}
 {
   <LLAVE_I> (e=InstruccionFuncion() {instrucciones.add(e);})* <LLAVE_D> {return instrucciones;}
 }
 
+/**
+    listaParametros -> tipo IDENTIFICADOR
+                    | COMA tipo IDENTIFICADOR
+                    | 
+*/
 ArrayList<Declaracion> ListaParametros() :
 {ArrayList<Declaracion> lista = new ArrayList<Declaracion>(); Declaracion e; Tipo t; Token id;}
 {
@@ -267,12 +354,19 @@ ArrayList<Declaracion> ListaParametros() :
     {return lista;}
 }
 
+/**
+    imprimir -> IMPRIMIR ( expresion ) ;
+*/
 Instruccion Imprimir() :
 {Instruccion e;}
 {
     <IMPRIMIR> <PARIZ> e=Expresion() <PARDE> <PCOMA> {return new Imprimir(Tipo.IMPRIMIR, e,token.beginLine, token.beginColumn);}
 }
 
+/**
+    asignacion -> IDENTIFICADOR = expresion ;
+            | IDENTIFICADOR ( listaExpresiones ) ;
+*/
 Instruccion Asignacion():
 {Instruccion e; Token id; ArrayList<Instruccion> lista = new ArrayList<Instruccion>();}
 {
@@ -286,18 +380,33 @@ Instruccion Asignacion():
     <IGUAL> e = Expresion() <PCOMA> {return new Asignacion(Tipo.ASIGNACION, id.image, e, id.beginLine, id.beginColumn);}
 }
 
+/**
+    declaracion -> tipo IDENTIFICADOR ;
+                | tipo IDENTIFICADOR = expresion ;
+*/
 Instruccion Declaracion():
 {Tipo t; Token tok; Instruccion e = null;}
 {
     t = Tipo() tok = <IDENTIFICADOR> (<IGUAL> e = Expresion())? <PCOMA> {return new Declaracion(Tipo.DECLARACION,tok.image, e, t, tok.beginLine, tok.beginColumn);}
 }
 
+/**
+    retorno -> RETORNO ;
+            | RETORNO expresion ;
+*/
 Instruccion Retorno():
 {Instruccion e = null;}
 {
     <RETORNO> ( e = Expresion() )? <PCOMA> {return new Retorno(Tipo.RETORNO, e, token.beginLine, token.beginColumn);}
 }
 
+/**
+    funcionTipo -> INT
+                | DOUBLE
+                | CADENA
+                | BOOLEAN
+                | VOID
+*/
 Tipo FuncionTipo() :
 {}
 {
@@ -308,7 +417,12 @@ Tipo FuncionTipo() :
     | <VOID> {return Tipo.VOID;}
 }
 
-
+/**
+    tipo -> INT
+         | DOUBLE
+         | CADENA
+         | BOOLEAN
+*/
 Tipo Tipo() :
 {}
 {
@@ -318,6 +432,11 @@ Tipo Tipo() :
     | <BOOLEAN> {return Tipo.BOOLEAN;}
 }
 
+/**
+    listaExpresiones -> expresion
+                     |  , expresion
+                     | 
+*/
 ArrayList<Instruccion> Lista_Expresiones() :
 {ArrayList<Instruccion> lista = new ArrayList<Instruccion>(); Instruccion e;}
 {
@@ -330,6 +449,10 @@ ArrayList<Instruccion> Lista_Expresiones() :
     {return lista;}
 }
 
+/**
+    expresion -> and
+                | and OR and
+*/
 Instruccion Expresion() :
 {Instruccion e, e1;}
 {
@@ -340,6 +463,10 @@ Instruccion Expresion() :
     {return e;}
 }
 
+/**
+    and -> expresionIgual 
+        | expresionIgual AND expresionIgual
+*/
 Instruccion And() :
 {Instruccion e, e1;}
 {
@@ -350,6 +477,11 @@ Instruccion And() :
     {return e;}
 }
 
+/**
+    expresionIgual -> expresionRelacional
+                    | expresionRelacional == expresionRelacional
+                    | expresionRelacional != expresionRelacional
+*/
 Instruccion ExpresionIgual() :
 {Instruccion e, e1;}
 {
@@ -361,6 +493,13 @@ Instruccion ExpresionIgual() :
     {return e;}
 }
 
+/**
+    expresionRelacional -> expresionAditiva
+                        | expresionAditiva > expresionAditiva
+                        | expresionAditiva < expresionAditiva
+                        | expresionAditiva >= expresionAditiva
+                        | expresionAditiva <= expresionAditiva
+*/
 Instruccion ExpresionRelacional() :
 {Instruccion e, e1;}
 {
@@ -374,6 +513,11 @@ Instruccion ExpresionRelacional() :
     {return e;}
 }
 
+/**
+    expresionAditiva -> expresionMultiplicativa
+                    | expresionMultiplicativa + expresionMultiplicativa
+                    | expresionMultiplicativa - expresionMultiplicativa
+*/
 Instruccion ExpresionAditiva() :
 {Instruccion e, e1;}
 {
@@ -385,6 +529,11 @@ Instruccion ExpresionAditiva() :
     {return e;}
 }
 
+/**
+    expresionMultiplicativa -> expresionUnaria
+                            | expresionUnaria * expresionUnaria
+                            | expresionUnaria / expresionUnaria
+*/
 Instruccion ExpresionMultiplicativa() :
 {Instruccion e, e1;}
 {
@@ -396,6 +545,11 @@ Instruccion ExpresionMultiplicativa() :
     {return e;}
 }
 
+/**
+    expresionUnaria -> - primitivo
+                    | ! primitivo
+                    | primitivo
+*/
 Instruccion ExpresionUnaria() :
 {Instruccion e;}
 {
@@ -404,6 +558,16 @@ Instruccion ExpresionUnaria() :
     | e = Primitivo() {return e;}
 }
 
+/**
+    primitivo -> ENTERO
+                | DECIMAL
+                | STRING
+                | TRUE
+                | FALSE
+                | IDENTIFICADOR
+                | IDENTIFICADOR ( listaExpresiones )
+                | ( expresion )
+*/
 Instruccion Primitivo() :
 {Token t; Instruccion e = null; ArrayList<Instruccion> lista = new ArrayList<Instruccion>(); }
 {

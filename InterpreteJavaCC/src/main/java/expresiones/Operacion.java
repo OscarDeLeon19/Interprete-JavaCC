@@ -13,6 +13,15 @@ public class Operacion extends Instruccion {
     private int fila;
     private int columna;
 
+    /**
+     * Constructor de la instruccion operacion
+     * @param id Tipo de la instruccion
+     * @param valIzq Valor izquierdo de la operacion
+     * @param valDer Valor derecho de la operacion
+     * @param tipo El tipo de la operacion
+     * @param fila La fila donde se declara la operacion
+     * @param columna La columna donde se declara la operacion.
+     */
     public Operacion(Tipo id, Instruccion valIzq, Instruccion valDer, Tipo tipo, int fila, int columna) {
         super(id);
         this.valIzq = valIzq;
@@ -64,14 +73,17 @@ public class Operacion extends Instruccion {
 
     @Override
     public Instruccion operar(TablaSimbolos tabla) {
+        // Si la operacion es del tipo -6 se ejecuta lo siguiente
         if (tipo == Tipo.MENOS) {
+            // El setConsola es para asignar la consola de salida para mostrar instrucciones en pantalla
             valIzq.setConsola(super.getConsola());
+            // Se opera la instruccion y se castea despues de comprobar que no hay errores
             Instruccion nodoIzq = valIzq.operar(tabla);
             if (nodoIzq instanceof Error) {
                 return nodoIzq;
             }
             Valor val1 = (Valor) nodoIzq;
-            
+            // Dependiendo el tipo del valor, se haran diferenes conversiones.
             if(val1.getTipo() == Tipo.ENTERO){
                 int izq = (int) val1.getValor();
                 return new Valor(Tipo.VALOR, -izq, Tipo.ENTERO, fila, columna);
@@ -82,14 +94,12 @@ public class Operacion extends Instruccion {
                 return new Error(Tipo.ERROR, "Error al realizar la operacion", Tipo.SEMANTICO, fila, columna);
             }
         } else {
+            // Si la operacion no es de tipo Menos, se realizara otro codigo.
             valIzq.setConsola(super.getConsola());
             valDer.setConsola(super.getConsola());
+            // Se operan los valores
             Instruccion nodoIzq = valIzq.operar(tabla);
-            Instruccion nodoDer = valDer.operar(tabla);
-
-            
-            
-            
+            Instruccion nodoDer = valDer.operar(tabla); 
             if (nodoIzq instanceof Error) {
                 return nodoIzq;
             }
@@ -100,6 +110,10 @@ public class Operacion extends Instruccion {
 
             Valor val1 = (Valor) nodoIzq;
             Valor val2 = (Valor) nodoDer;
+            /**
+             * Dependiendo del tipo de operacion, se realizaran funciones diferentes.
+             * Se podran realizar solo operaciones entre datos con tipos especificos. No se pueden operar booleanos
+             */
             if (tipo == Tipo.SUMA) {
                 if (val1.getTipo() == Tipo.DECIMAL && val2.getTipo() == Tipo.DECIMAL) {
                     double izq = (double) val1.getValor();

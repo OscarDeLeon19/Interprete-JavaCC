@@ -17,6 +17,16 @@ public class Funcion extends Instruccion {
     private int columna;
     private Valor valorRetorno;
 
+    /**
+     * Constructor de la instruccion Funcion
+     * @param id El id de la instruccion
+     * @param identificador El identificador de la funcion
+     * @param parametros Los parametros de la funcion
+     * @param instrucciones Las instrucciones que debe realizar
+     * @param tipo El tipo de la funcion
+     * @param fila La fila en donde se declara la funcion
+     * @param columna La columna en donde se declara la funcion
+     */
     public Funcion(Tipo id, String identificador, ArrayList<Declaracion> parametros, ArrayList<Instruccion> instrucciones, Tipo tipo, int fila, int columna) {
         super(id);
         this.identificador = identificador;
@@ -87,12 +97,10 @@ public class Funcion extends Instruccion {
 
     @Override
     public Instruccion operar(TablaSimbolos tabla) {
-        //tabla.recorrerTabla();
-        if(super.getConsola() == null){
-            System.out.println("FATYYYYY");
-        }
+        // Se realiza un ciclo para operar cada una de las instrucciones
         for (Instruccion ins : instrucciones) {
             ins.setConsola(super.getConsola());
+            // Si la instruccion es una funcion de imprimir entonces se imprime en la consola el valor de esta.
             if (ins instanceof Imprimir) {
                 Instruccion val = ins.operar(tabla);
                 if (val instanceof Valor) {
@@ -101,7 +109,10 @@ public class Funcion extends Instruccion {
                     return val;
                 }
             } else if (ins instanceof Retorno) {
+                // Si es un Retorno, se ejecuta y luego el ciclo de instrucciones se termina.
                 if (tipo != Tipo.VOID) {
+                    // Si la funcion es diferente de void, entonces se asigna el valor del retorno
+                    // a la variable valorRetorno.
                     Instruccion retorno = ins.operar(tabla);
                     if (retorno != null) {
                         if (retorno instanceof Error) {
@@ -113,9 +124,12 @@ public class Funcion extends Instruccion {
                         return new Error(Tipo.ERROR, "El retorno debe tener un valor que retornar", tipo.SEMANTICO, fila, columna);
                     }
                 } else {
+                    // Si la funcion es de tipo void nada mas se finaliza el ciclo
                     break;
                 }
             } else if (ins instanceof Si) {
+                // Si la instruccion es un Si, se comprueba que esta tenga un valor de retorno.
+                // Si existe un valor de retorno entonces se asignara al valor de retorno de la funcion
                 Instruccion valor = ins.operar(tabla);
                 if (valor instanceof Error) {
                     return valor;
@@ -124,6 +138,7 @@ public class Funcion extends Instruccion {
                     valorRetorno = (Valor) ((Si) ins).getRetorno();
                 }
             } else {
+                // La instruccion se opera con normalidad.
                 Instruccion valor = ins.operar(tabla);
                 if (valor instanceof Error) {
                     return valor;

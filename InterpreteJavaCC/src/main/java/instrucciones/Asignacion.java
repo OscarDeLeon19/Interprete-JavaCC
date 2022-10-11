@@ -8,11 +8,20 @@ import expresiones.Valor;
 
 public class Asignacion extends Instruccion {
 
+    
     private String identificador;
     private Instruccion expresion;
     private int fila;
     private int columna;
 
+    /**
+     * Construccion de la instruccion asignacion
+     * @param id Id de la instruccion
+     * @param identificador Identificador en donde se realizara la asignacion
+     * @param expresion La expresion que se asignara
+     * @param fila La fila en donde se declara la instruccion
+     * @param columna La columna en donde se declara la instruccion
+     */
     public Asignacion(Tipo id, String identificador, Instruccion expresion, int fila, int columna) {
         super(id);
         this.identificador = identificador;
@@ -55,6 +64,7 @@ public class Asignacion extends Instruccion {
 
     @Override
     public Instruccion operar(TablaSimbolos tabla) {
+        // Se obtiene el simbolo de la tabla de simbolos y se castea.
         Simbolo simbolo = tabla.obtenerSimbolo(identificador);
         expresion.setConsola(super.getConsola());
         Instruccion ins = expresion.operar(tabla);
@@ -64,6 +74,7 @@ public class Asignacion extends Instruccion {
         
         Valor valor = (Valor) ins;
         
+        // En el programa hay casteo implicito, por lo que dependiendo de el tipo de los datos se convertiran al tipo del simbolo.
         if (simbolo.getTipo() == Tipo.CADENA) {
             if (valor.getTipo() == Tipo.CADENA) {
                 simbolo.setValor(valor.getValor());

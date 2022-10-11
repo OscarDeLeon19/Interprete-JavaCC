@@ -12,6 +12,15 @@ public class Logica extends Instruccion {
     private int fila;
     private int columna;
 
+    /**
+     * Constructor de la instruccion Logica
+     * @param id El id de la instruccion
+     * @param valIzq El valor de la izquierda 
+     * @param valDer El valor de la derecha
+     * @param tipo El tipo de la instruccion
+     * @param fila La fila en la que se declara la instruccion
+     * @param columna La columna en la que se declara la instruccion
+     */
     public Logica(Tipo id, Instruccion valIzq, Instruccion valDer, Tipo tipo, int fila, int columna) {
         super(id);
         this.valIzq = valIzq;
@@ -61,9 +70,16 @@ public class Logica extends Instruccion {
         this.columna = columna;
     }
 
+    /**
+     * Se opera la instruccion Logica
+     * @param tabla La tabla de simbolos
+     * @return Una instruccion
+     */
     @Override
     public Instruccion operar(TablaSimbolos tabla) {
+        // Se comprueba que ambos valores no sean nulos
         if (valIzq != null && valDer != null) {
+            // Opera ambos valores, si hay algun error la instruccion lo retornara.
             Instruccion nodoIzq = valIzq.operar(tabla);
             Instruccion nodoDer = valDer.operar(tabla);
             if (nodoIzq instanceof errores.Error) {
@@ -74,13 +90,17 @@ public class Logica extends Instruccion {
                 return nodoDer;
             }
 
+            // Se castea los valores
             Valor val1 = (Valor) nodoIzq;
             Valor val2 = (Valor) nodoDer;
 
+            // Se comprueba que ambos tipos sean iguales y valores booleanos.
             if (val1.getTipo() == val2.getTipo()) {
                 if (val1.getTipo() == Tipo.BOOLEAN) {
+                    // se obtienen ambos valores.
                     boolean number1 = (boolean) val1.getValor();
                     boolean number2 = (boolean) val2.getValor();
+                    // Dependiendo de el tipo de valor se retornaran diferentes valores
                     if (tipo == Tipo.AND) {
                         return new Valor(Tipo.VALOR, number1 && number2, Tipo.BOOLEAN, fila, columna);
                     } else if (tipo == Tipo.OR) {
@@ -95,6 +115,7 @@ public class Logica extends Instruccion {
                 return new errores.Error(Tipo.ERROR, "No se pueden operar valores de distinto tipo", Tipo.SEMANTICO, fila, columna);
             }
         } else {
+            // Si uno de los valores es nulo, se operara una funcion Not
             if (valIzq != null && valDer == null) {
                 Instruccion nodoIzq = valIzq.operar(tabla);
                 if (nodoIzq instanceof errores.Error) {

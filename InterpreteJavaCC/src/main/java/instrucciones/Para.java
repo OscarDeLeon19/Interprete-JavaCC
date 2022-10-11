@@ -15,6 +15,16 @@ public class Para extends Instruccion {
     private int fila;
     private int columna;
 
+    /**
+     * Constructor de la instruccion para
+     * @param id El id de la instruccion
+     * @param declaracion La declaracion de la instruccion
+     * @param relacion La expresion relacional de la instruccion
+     * @param iterador El iterador de la expresion
+     * @param cuerpo El cuerpo de la instruccion
+     * @param fila La fila en donde se declara
+     * @param columna La columna en donde se declara
+     */
     public Para(Tipo id, Declaracion declaracion, Instruccion relacion, Iteracion iterador, ArrayList<Instruccion> cuerpo, int fila, int columna) {
         super(id);
         this.declaracion = declaracion;
@@ -75,13 +85,14 @@ public class Para extends Instruccion {
 
     @Override
     public Instruccion operar(TablaSimbolos tabla) {
-
+        // Se crea la nueva tabla para el cuerpo de trabajo
         TablaSimbolos nuevaTabla = new TablaSimbolos(tabla);
+        // Se opera la declaracion
         Instruccion insDecla = declaracion.operar(nuevaTabla);
         if (insDecla instanceof Error) {
             return insDecla;
         }
-
+        // Se opera la expresion relacional
         Instruccion insRela = relacion.operar(nuevaTabla);
         if (insRela instanceof Error) {
             return insRela;
@@ -91,16 +102,19 @@ public class Para extends Instruccion {
         if (rel.getTipo() != Tipo.BOOLEAN) {
             return new Error(Tipo.ERROR, "La expresion debe ser relacional", Tipo.SEMANTICO, fila, columna);
         }
-
+        // Se asigna el identificador al iterador
         iterador.setIdentificador(declaracion.getIdentificador());
         boolean valorExpresion = (boolean) rel.getValor();
         boolean fin = false;
+        // Se obtiene el valor de la expresion, si es verdadero se ejecuta el ciclo.
         while (valorExpresion == true) {
             for (Instruccion ins : cuerpo) {
                 ins.setConsola(super.getConsola());
+                // Si la instruccion es Detener, se finaliza el ciclo               
                 if (ins instanceof Detener) {
                     fin = true;
                     break;
+                // Si la instruccion es un continuar, se continuara con la siguiente iteracion
                 } else if (ins instanceof Continuar) {
                     break;
                 } else if (ins instanceof Imprimir) {
@@ -133,11 +147,12 @@ public class Para extends Instruccion {
             if (fin == true) {
                 break;
             }
+            // Se opera el iterador para realizar una iteracion
             Instruccion iteracion = iterador.operar(nuevaTabla);
             if (iteracion instanceof Error) {
                 return iteracion;
             }
-
+            // Se opera de nuevo la expresion
             Instruccion nuevaExpresion = relacion.operar(nuevaTabla);
 
             if (nuevaExpresion instanceof Error) {

@@ -7,6 +7,10 @@ import tabla.Tipo;
 
 public class Detener extends Instruccion{
 
+    /**
+     * Constructor de la instruccion detener
+     * @param id 
+     */
     public Detener(Tipo id) {
         super(id);
     }

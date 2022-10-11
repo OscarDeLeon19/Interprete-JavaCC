@@ -9,6 +9,10 @@ public class TablaSimbolos {
     private ArrayList<Simbolo> simbolos = new ArrayList<>();
     private ArrayList<Funcion> funciones = new ArrayList<>();
 
+    /**
+     * Constructor de la tabla de simbolos
+     * @param padre La tabla padre
+     */
     public TablaSimbolos(TablaSimbolos padre) {
         this.padre = padre;
     }
@@ -37,9 +41,11 @@ public class TablaSimbolos {
         this.funciones = funciones;
     }
 
-    
-    
-    
+    /**
+     * Obtiene un simbolo de la tabla
+     * @param id El identificador del simbolo
+     * @return El simbolo encontrado
+     */
     public Simbolo obtenerSimbolo(String id) {
         for (Simbolo simbolo : simbolos) {
             if (simbolo.getId().equals(id)) {
@@ -52,6 +58,11 @@ public class TablaSimbolos {
         return null;
     }
 
+    /**
+     * Busca un simbolo en la tabla de simbolos
+     * @param id El id del simbolo
+     * @return Retorna si el simbolo existe o no.
+     */
     public boolean buscarSimbolo(String id) {
         for (Simbolo simbolo : simbolos) {
             if (simbolo.getId().equals(id)) {
@@ -64,6 +75,11 @@ public class TablaSimbolos {
         return false;
     }
 
+    /**
+     * Busca un simbolo unicamente en la tabla de simbolos actual
+     * @param id El identificador del simbolo
+     * @return El retorno si esta el simbolo o no
+     */
     public boolean buscarSimboloLocal(String id) {
         for (Simbolo simbolo : simbolos) {
             if (simbolo.getId().equals(id)) {
@@ -73,14 +89,27 @@ public class TablaSimbolos {
         return false;
     }
 
+    /**
+     * Agrega un simbolo a la tabla de simbolos.
+     * @param nuevaVariable El nuevo simbolo
+     */
     public void agregarSimbolo(Simbolo nuevaVariable) {
         simbolos.add(nuevaVariable);
     }
 
+    /**
+     * Agrega una funcion a la tabla de simbolos
+     * @param funcion La funcion que se agregará
+     */
     public void agregarFuncion(Funcion funcion) {
         funciones.add(funcion);
     }
 
+    /**
+     * Devuelve una funcion de la tabla de simbolos
+     * @param id El identificador de la funcion
+     * @return El retorno de la funcion.
+     */
     public Funcion obtenerFuncion(String id) {
         for (Funcion funcion : funciones) {
             if (funcion.getIdentificador().equals(id)) {
@@ -93,8 +122,12 @@ public class TablaSimbolos {
         return null;
     }
 
+    /**
+     * Busca una funcion en la tabla de simbolos
+     * @param id El identificador de la funcion
+     * @return El retorno de la funcion.
+     */
     public Boolean buscarFuncion(String id) {
-        
         for (Funcion funcion : funciones) {
             if (funcion.getIdentificador().equals(id)) {
                 return true;
@@ -105,27 +138,6 @@ public class TablaSimbolos {
             return padre.buscarFuncion(id);
         }
         return false;
-    }
-
-    public void recorrerTabla() {
-        
-        System.out.println("Tabla de simbolos");
-        for (Simbolo simbolo : simbolos) {
-            if (simbolo.getTipo() == Tipo.ENTERO) {
-                System.out.println(simbolo.getId());
-                int valor = Integer.parseInt(String.valueOf(simbolo.getValor()));
-                System.out.println("Val: " + valor);
-                System.out.println("");
-            } else if (simbolo.getTipo() == Tipo.DECIMAL) {
-                System.out.println(simbolo.getId());
-                System.out.println("Val: " + (double) simbolo.getValor());
-                System.out.println("");
-            } else {
-                System.out.println(simbolo.getId());
-                System.out.println("Val: " + String.valueOf(simbolo.getValor()));
-                System.out.println("");
-            }
-        }
     }
 
 }

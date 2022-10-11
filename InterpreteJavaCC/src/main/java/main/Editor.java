@@ -12,6 +12,9 @@ import instrucciones.Instruccion;
 import java.io.StringReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
+import javax.swing.text.BadLocationException;
 import salida.Salida;
 
 /**
@@ -21,7 +24,7 @@ import salida.Salida;
 public class Editor extends javax.swing.JFrame {
 
     /**
-     * Creates new form Editor
+     * Constructor de la clase editor
      */
     public Editor() {
         initComponents();
@@ -29,6 +32,21 @@ public class Editor extends javax.swing.JFrame {
         setResizable(false);
         Numeracion lineas = new Numeracion(areaTexto);
         jScrollPane1.setRowHeaderView(lineas);
+        
+        // Codigo para obtener la fila y columna en tiempo real
+        areaTexto.addCaretListener(new CaretListener() {
+            @Override
+            public void caretUpdate(CaretEvent e) {
+                int pos = e.getDot();
+                try {
+                    int row = areaTexto.getLineOfOffset(pos) + 1;
+                    int col = pos - areaTexto.getLineStartOffset(row - 1) + 1;
+                    labelPosDef.setText("Fila: " + row + " Columna: " + col);
+                } catch (BadLocationException exc) {
+                    System.out.println(exc);
+                }
+            }
+        });
     }
 
     /**
@@ -45,6 +63,7 @@ public class Editor extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         consola = new javax.swing.JTextArea();
         botonAnalizar = new javax.swing.JButton();
+        labelPosDef = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -69,20 +88,26 @@ public class Editor extends javax.swing.JFrame {
             }
         });
 
+        labelPosDef.setText("Linea: Columna: ");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 870, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(350, Short.MAX_VALUE)
-                .addComponent(botonAnalizar, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(344, 344, 344))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(67, 67, 67)
+                        .addComponent(labelPosDef)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 183, Short.MAX_VALUE)
+                        .addComponent(botonAnalizar, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(344, 344, 344))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 870, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -90,7 +115,9 @@ public class Editor extends javax.swing.JFrame {
                 .addGap(21, 21, 21)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 389, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(botonAnalizar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(botonAnalizar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelPosDef))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
                 .addContainerGap())
@@ -99,6 +126,10 @@ public class Editor extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Analiza el codigo escrito en el area de texto.
+     * @param evt 
+     */
     private void botonAnalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonAnalizarActionPerformed
         try {
             Salida salida = new Salida();
@@ -158,5 +189,6 @@ public class Editor extends javax.swing.JFrame {
     private javax.swing.JTextArea consola;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel labelPosDef;
     // End of variables declaration//GEN-END:variables
 }

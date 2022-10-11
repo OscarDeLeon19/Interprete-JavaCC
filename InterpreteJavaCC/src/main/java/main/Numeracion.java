@@ -13,6 +13,10 @@ import javax.swing.border.*;
 import javax.swing.event.*;
 import javax.swing.text.*;
 
+/**
+ * Clase descargada para numerar las filas del area de texto
+ * @author oscar
+ */
 public class Numeracion extends JPanel
         implements CaretListener, DocumentListener, PropertyChangeListener {
 

@@ -18,6 +18,15 @@ public class Relacional extends Instruccion {
     private int fila;
     private int columna;
 
+    /**
+     * Constructor de la instruccion relacional
+     * @param id El id de la instruccion
+     * @param valIzq El valor izquierdo de la relacion
+     * @param valDer El valor derecho de la relacion.
+     * @param tipo El tipo de relacion
+     * @param fila
+     * @param columna 
+     */
     public Relacional(Tipo id, Instruccion valIzq, Instruccion valDer, Tipo tipo, int fila, int columna) {
         super(id);
         this.valIzq = valIzq;
@@ -65,12 +74,12 @@ public class Relacional extends Instruccion {
     }
 
     public void setColumna(int columna) {
-        this.columna = columna;
+        this.columna = columna;   
     }
 
     @Override
     public Instruccion operar(TablaSimbolos tabla) {
-        
+            // Se operan ambos valores y se castean
             Instruccion nodoIzq = valIzq.operar(tabla);
             Instruccion nodoDer = valDer.operar(tabla);
             if (nodoIzq instanceof Error) {
@@ -83,7 +92,9 @@ public class Relacional extends Instruccion {
 
             Valor val1 = (Valor) nodoIzq;
             Valor val2 = (Valor) nodoDer;
-
+            
+            // Los tipos que se van a comparar deben ser del mismo tipo
+            // Dependiendo del tipo de valores, se realizaran acciones diferentes.
             if (val1.getTipo() == val2.getTipo()) {
                 if (val1.getTipo() == Tipo.CADENA) {
                     String cad1 = String.valueOf(val1.getValor());

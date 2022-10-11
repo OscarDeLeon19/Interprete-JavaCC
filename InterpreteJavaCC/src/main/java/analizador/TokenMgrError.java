@@ -132,7 +132,12 @@ public class TokenMgrError extends Error
    public int getBeginColumn() {
         return beginColumn;
    }
-   
+   /**
+    * Constuctor para el codigo necesario para poder obtener errores lexicos
+    * @param message El mensaje del error
+    * @param line La linea donde produjo el error
+    * @param column La columna donde se produjo el error,
+    */
    public TokenMgrError(String message, int line, int column){
        super(message);
        this.beginLine = line;
