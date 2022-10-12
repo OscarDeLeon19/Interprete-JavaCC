@@ -23,16 +23,15 @@ import salida.Salida;
  */
 public class Editor extends javax.swing.JFrame {
 
-    /**
-     * Constructor de la clase editor
-     */
+    Archivo archivo = new Archivo();
+
     public Editor() {
         initComponents();
         setLocationRelativeTo(null);
         setResizable(false);
         Numeracion lineas = new Numeracion(areaTexto);
         jScrollPane1.setRowHeaderView(lineas);
-        
+
         // Codigo para obtener la fila y columna en tiempo real
         areaTexto.addCaretListener(new CaretListener() {
             @Override
@@ -64,8 +63,15 @@ public class Editor extends javax.swing.JFrame {
         consola = new javax.swing.JTextArea();
         botonAnalizar = new javax.swing.JButton();
         labelPosDef = new javax.swing.JLabel();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        menuNuevo = new javax.swing.JMenuItem();
+        menuAbrir = new javax.swing.JMenuItem();
+        menuGuardar = new javax.swing.JMenuItem();
+        menuGuardarComo = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Interprete JavaCC");
 
         areaTexto.setColumns(20);
         areaTexto.setRows(5);
@@ -89,6 +95,48 @@ public class Editor extends javax.swing.JFrame {
         });
 
         labelPosDef.setText("Linea: Columna: ");
+
+        jMenu1.setText("Archivo");
+
+        menuNuevo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        menuNuevo.setText("Nuevo");
+        menuNuevo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuNuevoActionPerformed(evt);
+            }
+        });
+        jMenu1.add(menuNuevo);
+
+        menuAbrir.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        menuAbrir.setText("Abrir");
+        menuAbrir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuAbrirActionPerformed(evt);
+            }
+        });
+        jMenu1.add(menuAbrir);
+
+        menuGuardar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        menuGuardar.setText("Guardar");
+        menuGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuGuardarActionPerformed(evt);
+            }
+        });
+        jMenu1.add(menuGuardar);
+
+        menuGuardarComo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.ALT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        menuGuardarComo.setText("Guardar Como");
+        menuGuardarComo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuGuardarComoActionPerformed(evt);
+            }
+        });
+        jMenu1.add(menuGuardarComo);
+
+        jMenuBar1.add(jMenu1);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -119,7 +167,7 @@ public class Editor extends javax.swing.JFrame {
                     .addComponent(botonAnalizar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labelPosDef))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -128,7 +176,8 @@ public class Editor extends javax.swing.JFrame {
 
     /**
      * Analiza el codigo escrito en el area de texto.
-     * @param evt 
+     *
+     * @param evt
      */
     private void botonAnalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonAnalizarActionPerformed
         try {
@@ -138,15 +187,33 @@ public class Editor extends javax.swing.JFrame {
             String texto = areaTexto.getText();
             StringReader str = new StringReader(texto);
             Gramatica gram = new Gramatica(str);
-            
+
             gram.setSalida(salida);
             gram.Analizar();
-            
+
             salida.operarSalida();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }//GEN-LAST:event_botonAnalizarActionPerformed
+
+    private void menuGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuGuardarActionPerformed
+        archivo.guardar(areaTexto.getText());
+    }//GEN-LAST:event_menuGuardarActionPerformed
+
+    private void menuNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuNuevoActionPerformed
+        this.areaTexto.setText("");
+        this.consola.setText("");
+        archivo.limpiarFichero();
+    }//GEN-LAST:event_menuNuevoActionPerformed
+
+    private void menuAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuAbrirActionPerformed
+        archivo.obtenerArchivo(areaTexto);
+    }//GEN-LAST:event_menuAbrirActionPerformed
+
+    private void menuGuardarComoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuGuardarComoActionPerformed
+        archivo.guardarComo(areaTexto.getText());
+    }//GEN-LAST:event_menuGuardarComoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -187,8 +254,14 @@ public class Editor extends javax.swing.JFrame {
     private javax.swing.JTextArea areaTexto;
     private javax.swing.JButton botonAnalizar;
     private javax.swing.JTextArea consola;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel labelPosDef;
+    private javax.swing.JMenuItem menuAbrir;
+    private javax.swing.JMenuItem menuGuardar;
+    private javax.swing.JMenuItem menuGuardarComo;
+    private javax.swing.JMenuItem menuNuevo;
     // End of variables declaration//GEN-END:variables
 }

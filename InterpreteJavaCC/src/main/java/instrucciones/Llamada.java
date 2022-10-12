@@ -100,7 +100,6 @@ public class Llamada extends Instruccion {
                     }
                     // Se agrega la nueva variable a la tabla de simbolos nueva
                     nuevaTabla.agregarSimbolo(new Simbolo(decla.getTipo(), decla.getIdentificador(), valorExpresion.getValor(), decla.getFila(), decla.getColumna()));
-                    nuevaTabla.recorrerTabla();
                 } else {
                     return new Error(Tipo.ERROR, "El simbolo ya esta declarado", Tipo.SEMANTICO, fila, columna);
                 }
