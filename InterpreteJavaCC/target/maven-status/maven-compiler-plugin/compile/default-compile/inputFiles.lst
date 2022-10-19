@@ -6,8 +6,10 @@ C:\Users\oscar\Documents\NetBeansProjects\Interprete-JavaCC\InterpreteJavaCC\src
 C:\Users\oscar\Documents\NetBeansProjects\Interprete-JavaCC\InterpreteJavaCC\src\main\java\instrucciones\Instruccion.java
 C:\Users\oscar\Documents\NetBeansProjects\Interprete-JavaCC\InterpreteJavaCC\src\main\java\expresiones\Relacional.java
 C:\Users\oscar\Documents\NetBeansProjects\Interprete-JavaCC\InterpreteJavaCC\src\main\java\instrucciones\Iteracion.java
+C:\Users\oscar\Documents\NetBeansProjects\Interprete-JavaCC\InterpreteJavaCC\src\main\java\main\Archivo.java
 C:\Users\oscar\Documents\NetBeansProjects\Interprete-JavaCC\InterpreteJavaCC\src\main\java\instrucciones\Asignacion.java
 C:\Users\oscar\Documents\NetBeansProjects\Interprete-JavaCC\InterpreteJavaCC\src\main\java\tabla\Simbolo.java
+C:\Users\oscar\Documents\NetBeansProjects\Interprete-JavaCC\InterpreteJavaCC\src\main\java\instrucciones\Continuar.java
 C:\Users\oscar\Documents\NetBeansProjects\Interprete-JavaCC\InterpreteJavaCC\src\main\java\tabla\Tipo.java
 C:\Users\oscar\Documents\NetBeansProjects\Interprete-JavaCC\InterpreteJavaCC\src\main\java\analizador\GramaticaTokenManager.java
 C:\Users\oscar\Documents\NetBeansProjects\Interprete-JavaCC\InterpreteJavaCC\src\main\java\instrucciones\Imprimir.java
@@ -22,6 +24,7 @@ C:\Users\oscar\Documents\NetBeansProjects\Interprete-JavaCC\InterpreteJavaCC\src
 C:\Users\oscar\Documents\NetBeansProjects\Interprete-JavaCC\InterpreteJavaCC\src\main\java\expresiones\Logica.java
 C:\Users\oscar\Documents\NetBeansProjects\Interprete-JavaCC\InterpreteJavaCC\src\main\java\analizador\Token.java
 C:\Users\oscar\Documents\NetBeansProjects\Interprete-JavaCC\InterpreteJavaCC\src\main\java\errores\Error.java
+C:\Users\oscar\Documents\NetBeansProjects\Interprete-JavaCC\InterpreteJavaCC\src\main\java\instrucciones\Detener.java
 C:\Users\oscar\Documents\NetBeansProjects\Interprete-JavaCC\InterpreteJavaCC\src\main\java\analizador\GramaticaConstants.java
 C:\Users\oscar\Documents\NetBeansProjects\Interprete-JavaCC\InterpreteJavaCC\src\main\java\instrucciones\Funcion.java
 C:\Users\oscar\Documents\NetBeansProjects\Interprete-JavaCC\InterpreteJavaCC\src\main\java\instrucciones\Para.java

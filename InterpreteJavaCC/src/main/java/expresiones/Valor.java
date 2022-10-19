@@ -84,7 +84,7 @@ public class Valor extends Instruccion {
             if (simbolo != null) {
                 return new Valor(Tipo.VALOR,  simbolo.getValor(), simbolo.getTipo(), this.fila, this.columna);
             } else {
-                return new Error(Tipo.ERROR, "No se encontro el simbolo solicitado", Tipo.SEMANTICO, fila, columna);
+                return new Error(Tipo.ERROR, "No se encontro el simbolo " + String.valueOf(valor), Tipo.SEMANTICO, fila, columna);
             }
         } else if (tipo == Tipo.LLAMADA) {
             // Se busca la funcion a la que se le realiza la llamada.

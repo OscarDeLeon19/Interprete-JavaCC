@@ -73,7 +73,10 @@ public class Editor extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Interprete JavaCC");
 
+        areaTexto.setBackground(new java.awt.Color(51, 51, 51));
         areaTexto.setColumns(20);
+        areaTexto.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        areaTexto.setForeground(new java.awt.Color(255, 153, 0));
         areaTexto.setRows(5);
         areaTexto.setTabSize(4);
         jScrollPane1.setViewportView(areaTexto);
@@ -81,6 +84,7 @@ public class Editor extends javax.swing.JFrame {
         consola.setEditable(false);
         consola.setBackground(new java.awt.Color(0, 0, 102));
         consola.setColumns(20);
+        consola.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         consola.setForeground(new java.awt.Color(255, 255, 51));
         consola.setRows(5);
         consola.setTabSize(2);
